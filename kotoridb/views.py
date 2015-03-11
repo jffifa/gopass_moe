@@ -36,6 +36,8 @@ def on_air(request):
     context = nav_context()
     context['animes'] = on_air_animes
     context['time_now'] = now
+
+    timezone.activate(pytz.timezone('Asia/Shanghai'))
     return render(request, 'kotoridb/on_air.html', context)
     #return HttpResponse(str(on_air_animes))
 

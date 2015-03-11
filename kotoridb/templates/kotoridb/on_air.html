@@ -17,7 +17,8 @@
     </tr>
 </thead>
 <tbody>
-    {% for a in animes %}
+    {% for w, a_list in animes.items %}
+    {% for a in a_list %}
     <tr data-clickx="1">
         <td>{% if a.homepage %}<a href="{{ a.homepage }}">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}</td>
         <td>{% if a.translations %}{{ a.translations }}{% endif %}</td>
@@ -30,6 +31,8 @@
             {% if a.dom_on_air_tv %}{{ a.dom_on_air_tv }}{% endif %}{% if a.dom_on_air_link %}</a>{% endif %}
             {% if a.dom_on_air_link %}/ {{ a.dom_on_air_time|date:"H:i, D" }}{% endif %}</td>
     </tr>
+    {% endfor %}
+    {% if forloop.last %}<tr><td colspan="6"></td></tr>{% endif %}
     {% endfor %}
 </tbody>
 </table>
