@@ -18,8 +18,8 @@
 </thead>
 <tbody>
     {% for a in animes %}
-    <tr data-click="1">
-        <td>{% if a.homepage %}<a href="{{ a.homepage }}">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}</span></td>
+    <tr data-clickx="1">
+        <td>{% if a.homepage %}<a href="{{ a.homepage }}">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}</td>
         <td>{% if a.translations %}{{ a.translations }}{% endif %}</td>
         <td>{{ a.studio.name }}{% if a.studio.translations %}{% endif %}</td>
         <td>{% if a.on_air_link %}<a href="{{ a.on_air_link}}">{% endif %}
@@ -49,24 +49,12 @@ $('tr[data-click]').on('click',function(){
         $('tr[data-click-show]').remove();
         $(this).attr('data-click-on', '1').after('<tr>');
         var tr_info = $(this).next('tr');
-        tr_info.attr('style', 'width:100%').attr('data-click-show', '1').append('<td colspan="6"></div>');
+        tr_info.attr('style', 'height:200px').attr('data-click-show', '1').append('<td colspan="6">');
     }
-    /*
-    $('tr[data-click-show]').remove();
-    if ($(this).children('[data-mouseshow]').length == 0) {
-        var img = $('<img>');
-        img.addClass('thumbnail');
-        img.attr('data-mouseshow', '1');
-        var url = $(this).attr('href');
-        if (!url) {
-            url = $(this).find('a').attr('href');
-        }
-        img.attr('src', url);
-        var selft = $(this);
-        dataMouseTimeId = setTimeout(function(){selft.append(img);}, 300);
-    }
-    */
     return false;
+});
+$('tr[data-click] td a').click(function(e) {
+    e.stopPropagation();
 });
 </script>
 {% endblock %}
