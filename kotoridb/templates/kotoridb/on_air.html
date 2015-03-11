@@ -42,6 +42,7 @@
 $("li#nav-bangumi").addClass("active");
 $('tr[data-click]').on('click',function(){
     if ($(this).attr('data-click-on')) {
+        $(this).removeAttr('data-click-on');
         $(this).next('tr[data-click-show]').remove();
     } else {
         $(this).attr('data-click-on', '1');
