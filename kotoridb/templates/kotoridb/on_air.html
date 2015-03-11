@@ -49,7 +49,7 @@ $('tr[data-click]').on('click',function(){
         $('tr[data-click-show]').remove();
         $(this).attr('data-click-on', '1').after('<tr>');
         var tr_info = $(this).next('tr');
-        tr_info.attr('style', 'width:100%').attr('data-click-show', '1').append('<div style="min-height:200px"></div>');
+        tr_info.attr('style', 'width:100%').attr('data-click-show', '1').append('<td colspan="6"></div>');
     }
     /*
     $('tr[data-click-show]').remove();
