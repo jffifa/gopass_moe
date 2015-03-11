@@ -8,7 +8,7 @@ import datetime
 def nav_context():
     now = timezone.now()
     now_year = int(now.strftime('%Y'))
-    year_list = list(range(now_year-5,now_year))
+    year_list = list(range(now_year-4,now_year+1))
     year_list.reverse()
     nav_context = {'nav_context':{
         'bangumi':{
