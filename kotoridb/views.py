@@ -18,13 +18,17 @@ def nav_context():
     return nav_context
 
 def on_air_time_show(t):
+    TZ = pytz.timezone('Asia/Shanghai')
+    t = t.astimezone(TZ)
+
     if int(t.strftime('%H')) <= 4:
-        pass
+        h = 24+t.strftime('%H')
+        tt = t - datetime.timedelta(days=1)
+        return (int(tt.strftime('%w')), str(h)+tt.strftime(':%M, %a, %Y-%m-%d'))
     else:
-        return t.strftime('%H:%M, %')
+        return (int(t.strftime('%w')), t.strftime('%H:%M, %a, %Y-%m-%d'))
 
 def on_air(request):
-    TZ = pytz.timezone('Asia/Shanghai')
 
     now = timezone.now()
     td_before = datetime.timedelta(weeks=4)
@@ -33,7 +37,8 @@ def on_air(request):
     for a in animes:
         end_time = a.on_air_time + datetime.timedelta(weeks=a.on_air_weeks)
         if end_time > now:
-            on_air_animes[int(a.on_air_time.astimezone(TZ).strftime('%w'))].append(a)
+            w, a.on_air_time_show = on_air_time_show(a.on_air_time)
+            on_air_animes[w].append(a)
 
     context = nav_context()
     context['animes'] = on_air_animes
