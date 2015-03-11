@@ -32,7 +32,7 @@
             {% if a.dom_on_air_link %}/ {{ a.dom_on_air_time|date:"H:i, D" }}{% endif %}</td>
     </tr>
     {% endfor %}
-    {% if forloop.last %}<tr><td colspan="6"></td></tr>{% endif %}
+    {% if not forloop.last %}<tr><td colspan="6"></td></tr>{% endif %}
     {% endfor %}
 </tbody>
 </table>
