@@ -47,7 +47,8 @@ $('tr[data-click]').on('click',function(){
     } else {
         $(this).attr('data-click-on', '1');
         $(this).after('<tr>');
-        $(this).next('tr').attr('data-click-show', '1');
+        var tr_info = $(this).next('tr');
+        tr_info.attr('data-click-show', '1').append('<td>');
     }
     /*
     $('tr[data-click-show]').remove();
