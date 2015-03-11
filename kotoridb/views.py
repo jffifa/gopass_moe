@@ -22,7 +22,7 @@ def on_air_time_show(t):
     t = t.astimezone(TZ)
 
     if int(t.strftime('%H')) <= 4:
-        h = 24+t.strftime('%H')
+        h = 24+int(t.strftime('%H'))
         tt = t - datetime.timedelta(days=1)
         return (int(tt.strftime('%w')), str(h)+tt.strftime(':%M, %a, %Y-%m-%d'))
     else:
