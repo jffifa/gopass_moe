@@ -18,7 +18,7 @@
 </thead>
 <tbody>
     {% for a in animes %}
-    <tr>
+    <tr data-click="1">
         <td>{% if a.homepage %}<a href="{{ a.homepage }}">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}</span></td>
         <td>{% if a.translations %}{{ a.translations }}{% endif %}</td>
         <td>{{ a.studio.name }}{% if a.studio.translations %}{% endif %}</td>
@@ -40,6 +40,31 @@
 {% block footer_extra %}
 <script type="text/javascript">
 $("li#nav-bangumi").addClass("active");
+$('tr[data-click]').on('click',function(){
+    if ($(this).attr('data-click-on')) {
+        $(this).next('tr[data-click-show]').remove();
+    } else {
+        $(this).attr('data-click-on', '1');
+        $(this).after('<tr>');
+        $(this).next('tr').attr('data-click-show', '1');
+    }
+    /*
+    $('tr[data-click-show]').remove();
+    if ($(this).children('[data-mouseshow]').length == 0) {
+        var img = $('<img>');
+        img.addClass('thumbnail');
+        img.attr('data-mouseshow', '1');
+        var url = $(this).attr('href');
+        if (!url) {
+            url = $(this).find('a').attr('href');
+        }
+        img.attr('src', url);
+        var selft = $(this);
+        dataMouseTimeId = setTimeout(function(){selft.append(img);}, 300);
+    }
+    */
+    return false;
+});
 </script>
 {% endblock %}
 
