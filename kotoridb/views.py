@@ -38,7 +38,7 @@ def on_air(request):
         end_time = a.on_air_time + datetime.timedelta(weeks=a.on_air_weeks)
         if end_time > now:
             w, a.on_air_time_show = on_air_time_show(a.on_air_time)
-            a.dom_on_air_time_show = on_air_time_show(a.dom_on_air_time)
+            a.dom_on_air_time_show = on_air_time_show(a.dom_on_air_time) if a.dom_on_air_time
             on_air_animes[w].append(a)
 
     context = nav_context()
