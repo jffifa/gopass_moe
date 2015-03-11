@@ -24,6 +24,8 @@ def on_air_time_show(t):
         return t.strftime('%H:%M, %')
 
 def on_air(request):
+    TZ = pytz.timezone('Asia/Shanghai')
+
     now = timezone.now()
     td_before = datetime.timedelta(weeks=4)
     animes = Anime.objects.filter(on_air_time__lte=now+td_before).order_by('on_air_time')
@@ -31,7 +33,7 @@ def on_air(request):
     for a in animes:
         end_time = a.on_air_time + datetime.timedelta(weeks=a.on_air_weeks)
         if end_time > now:
-            on_air_animes[int(a.on_air_time.strftime('%w'))].append(a)
+            on_air_animes[int(a.on_air_time.astimezone(TZ).strftime('%w'))].append(a)
 
     context = nav_context()
     context['animes'] = on_air_animes
