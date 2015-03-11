@@ -26,7 +26,7 @@
         <td>{% if a.on_air_link %}<a href="{{ a.on_air_link}}">{% endif %}
             {% if a.on_air_tv %}{{ a.on_air_tv }}{% endif %}
             {% if a.on_air_link %}</a>{% endif %}</td>
-        <td class="{% if a.on_air_time > time_now %}info{% else %}success{% endif %}">{{ a.on_air_time|date:"H:i, D, Y-m-d" }}</td>
+        <td class="{% if a.on_air_time > time_now %}info{% else %}success{% endif %}">{{ a.on_air_time_show }}</td>
         <td>{% if a.dom_on_air_link %}<a href="{{ a.dom_on_air_link}}">{% endif %}
             {% if a.dom_on_air_tv %}{{ a.dom_on_air_tv }}{% endif %}{% if a.dom_on_air_link %}</a>{% endif %}
             {% if a.dom_on_air_link %}/ {{ a.dom_on_air_time|date:"H:i, D" }}{% endif %}</td>
