@@ -45,10 +45,11 @@ $('tr[data-click]').on('click',function(){
         $(this).removeAttr('data-click-on');
         $(this).next('tr[data-click-show]').remove();
     } else {
+        $('tr[data-click-on]').removeAttr('data-click-on');
         $('tr[data-click-show]').remove();
         $(this).attr('data-click-on', '1').after('<tr>');
         var tr_info = $(this).next('tr');
-        tr_info.attr('data-click-show', '1').append('<div style="min-height:200px"></div>');
+        tr_info.attr('style', 'min-height:200px;width:100%').attr('data-click-show', '1').append('<div>');
     }
     /*
     $('tr[data-click-show]').remove();
