@@ -19,7 +19,7 @@
 <tbody>
     {% for a in animes %}
     <tr>
-        <td>{% if a.homepage %}<a href="{{ a.homepage }}">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}<span class="glyphicon glyphicon-collapse-down"></span></td>
+        <td>{% if a.homepage %}<a href="{{ a.homepage }}">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}<span class="glyphicon glyphicon-collapse-down" style="font-size:16px"></span></td>
         <td>{% if a.translations %}{{ a.translations }}{% endif %}</td>
         <td>{{ a.studio.name }}{% if a.studio.translations %}{% endif %}</td>
         <td>{% if a.on_air_link %}<a href="{{ a.on_air_link}}">{% endif %}
