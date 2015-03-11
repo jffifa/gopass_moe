@@ -17,10 +17,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lp%0b_p0q56rv^ho=p7oy41ij6e)hi1lhh)tn1$fk#_cf-o0+r'
+#SECRET_KEY = 'lp%0b_p0q56rv^ho=p7oy41ij6e)hi1lhh)tn1$fk#_cf-o0+r'
+with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
+    SECRET_KEY = f.read.strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -87,10 +89,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 )
+STATIC_ROOT = '/srv/http/gopass/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+MEDIA_ROOT = '/srv/http/gopass/uploads/'
 MEDIA_URL = '/uploads/'
 
 
