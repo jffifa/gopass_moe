@@ -24,9 +24,9 @@ def on_air_time_show(t):
     if int(t.strftime('%H')) <= 4:
         h = 24+int(t.strftime('%H'))
         tt = t - datetime.timedelta(days=1)
-        return (int(tt.strftime('%w')), str(h)+tt.strftime(':%M, %a, %Y-%m-%d'))
+        return (int(tt.strftime('%w')), str(h)+tt.strftime(':%M, %a'), tt.strftime('%Y-%m-%d'))
     else:
-        return (int(t.strftime('%w')), t.strftime('%H:%M, %a, %Y-%m-%d'))
+        return (int(t.strftime('%w')), t.strftime('%H:%M, %a'), t.strftime('%Y-%m-%d'))
 
 def on_air(request):
 
@@ -37,7 +37,7 @@ def on_air(request):
     for a in animes:
         end_time = a.on_air_time + datetime.timedelta(weeks=a.on_air_weeks)
         if end_time > now:
-            w, a.on_air_time_show = on_air_time_show(a.on_air_time)
+            w, a.on_air_time_show, a.on_air_date_show = on_air_time_show(a.on_air_time)
             a.dom_on_air_time_show = on_air_time_show(a.dom_on_air_time) if a.dom_on_air_time else None
             on_air_animes[w].append(a)
 
