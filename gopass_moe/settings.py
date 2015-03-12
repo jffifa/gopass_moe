@@ -62,12 +62,15 @@ WSGI_APPLICATION = 'gopass_moe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
+with open(os.path.join(BASE_DIR, 'db_passwd.txt')) as f:
+    DB_USER, DB_PASSWD = map(lambda x:x.strip(), f.readlines())
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gopass_moe',
-        'USER': 'gopass',
-        'PASSWORD': '95279423',
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWD,
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
