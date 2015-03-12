@@ -99,5 +99,5 @@ STATIC_ROOT = '/srv/http/gopass/static/'
 MEDIA_ROOT = '/srv/http/gopass/uploads/'
 MEDIA_URL = '/uploads/'
 
-
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
