@@ -26,10 +26,10 @@
         <td>{% if a.on_air_link %}<a href="{{ a.on_air_link}}" target="_blank">{% endif %}
             {% if a.on_air_tv %}{{ a.on_air_tv }}{% endif %}
             {% if a.on_air_link %}</a>{% endif %}</td>
-        <td class="{% if a.on_air_time > time_now %}info{% else %}success{% endif %}"><span class="time-nowrap">{{ a.on_air_time_show }}</span><span class="time-nowrap">{{ a.on_air_date_show }}</span></td>
+        <td class="{% if a.on_air_time > time_now %}info{% else %}success{% endif %}"><span class="time-nowrap">{{ a.on_air_time_show }}</span>, <span class="time-nowrap">{{ a.on_air_date_show }}</span></td>
         <td>{% if a.dom_on_air_link %}<a href="{{ a.dom_on_air_link}}" target="_blank">{% endif %}
             {% if a.dom_on_air_tv %}{{ a.dom_on_air_tv }}{% endif %}{% if a.dom_on_air_link %}</a>{% endif %}
-            {% if a.dom_on_air_link %}/ {{ a.dom_on_air_time|date:"H:i, D" }}{% endif %}</td>
+        {% if a.dom_on_air_link %}/ <span class="time-nowrap">{{ a.dom_on_air_time|date:"H:i, D" }}</span>{% endif %}</td>
     </tr>
     {% endfor %}
     {% if not forloop.last %}<tr><td colspan="6"></td></tr>{% endif %}
