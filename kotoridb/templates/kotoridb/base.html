@@ -40,12 +40,12 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li id="nav-home"><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/2b">Forum</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/2b/">Forum</a></li>
             <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stream<span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="/matome.htm">まとめ</a></li>
+                <li><a href="/static/matome.htm">まとめ</a></li>
             </ul></li>
             <li id="nav-bangumi" class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bangumi<span class="caret"></span></a>
@@ -55,6 +55,8 @@
                 {% for year in nav_context.bangumi.finished_years %}
                 <li><a href="#">{{ year }}</a></li>
                 {% endfor %}
+                <li class="dropdown-header">Static</li>
+                <li><a href="/static/onair1501.html">2015.01</a></li>
             </ul></li>
           </ul>
         </div><!--/.nav-collapse -->
