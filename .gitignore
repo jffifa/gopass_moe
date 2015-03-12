@@ -1,6 +1,7 @@
 # custom
 kotoridb/migrations
 nohup.out
+manage.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
