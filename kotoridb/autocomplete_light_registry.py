@@ -1,5 +1,5 @@
 import autocomplete_light
-from models import Person
+from models import Studio
 
 autocomplete_light.register(Studio,
     search_fields=['^name', '^translations'],
