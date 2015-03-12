@@ -1,11 +1,14 @@
 from django.contrib import admin
 from kotoridb.models import Anime, OnAirInfo, Studio
+import autocomplete_light
 
 class AnimeOnAirInline(admin.TabularInline):
     model=OnAirInfo
     extra=0
 
 class AnimeAdmin(admin.ModelAdmin):
+    form = autocomplete_light.modelform_factory(Anime)
+
     list_display = (
         'title',
         'translations',
