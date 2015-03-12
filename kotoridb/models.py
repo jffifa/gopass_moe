@@ -10,7 +10,10 @@ class Translation(models.Model):
 class Studio(models.Model):
 
     def __str__(self):
-        return self.name
+        if self.translations:
+            return '%s(%s)' % (self.title, self.translations)
+        else:
+            return self.title
 
     name = models.CharField(max_length=128, default='studio', db_index=True)
     #translations = models.ManyToManyField(Translation, blank=True)
@@ -19,7 +22,10 @@ class Studio(models.Model):
 class Anime(models.Model):
 
     def __str__(self):
-        return self.title
+        if self.translations:
+            return '%s(%s)' % (self.title, self.translations)
+        else:
+            return self.title
 
 
     title = models.CharField(max_length=128, default='title', db_index=True)
@@ -49,7 +55,7 @@ class Anime(models.Model):
 class OnAirInfo(models.Model):
 
     def __str__(self):
-        return self.tv_station+'|'+str(self.time)
+        return self.tv_station+'/'+str(self.time)
 
     tv_station = models.CharField(max_length=128, blank=True, default='')
     time = models.DateTimeField(blank=True, null=True, default=None)
@@ -61,3 +67,33 @@ class OnAirInfo(models.Model):
             self.tv_station = utils.guess_tv_name(self.link)
         super(OnAirInfo, self).save(*args, **kwargs)
 
+class Person(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=128, db_index=True)
+    image = models.ImageField(upload_to='images/person', max_length=256, blank=True)
+
+class Staff(models.Model):
+    _TITLES = {
+        (1,'原作','original'),
+        (2,'监督','director'),
+        (2,'系列构成','script plan'),
+        (3,'脚本','script'),
+        (4,'音乐','music'),
+        (4,'音响监督','director of audiography'),
+        (4,'摄影监督','director of photography'),
+        (4,'演出','impresario'),
+        (5,'总作画监督','chief animation director'),
+        (5,'作画监督','animation director'),
+        (5,'分镜','storyboard'),
+        (5,'色彩设定','color design'),
+        (5,'制作进行','production assistant'),
+        (5,'美术监督','production designer'),
+        (6,'人物设定','character design'),
+    }
+
+    def __str__(self):
+        return self.title+':'+self.person.name
+
+    title = models.
