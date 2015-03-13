@@ -2,6 +2,7 @@
 kotoridb/migrations
 nohup.out
 manage.py
+gopass_moe/settings.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
