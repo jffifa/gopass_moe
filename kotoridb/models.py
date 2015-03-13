@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from kotoridb import utils
 
@@ -11,7 +12,7 @@ class Studio(models.Model):
 
     def __str__(self):
         if self.translations:
-            return '%s(%s)' % (self.title, self.translations)
+            return '%s(%s)' % (self.name, self.translations)
         else:
             return self.title
 
@@ -28,24 +29,24 @@ class Anime(models.Model):
             return self.title
 
 
-    title = models.CharField(max_length=128, default='title', db_index=True)
-    translations = models.CharField(max_length=128, blank=True, default='', db_index=True)
+    title = models.CharField(max_length=128, default='title', db_index=True, verbose_name='标题')
+    translations = models.CharField(max_length=128, blank=True, default='', db_index=True, verbose_name='译名')
     #translations = models.ManyToManyField(Translation, blank=True)
-    homepage = models.URLField(max_length=256, blank=True, default='')
-    on_air_tv = models.CharField(max_length=128, default='')
-    on_air_time = models.DateTimeField(blank=True, null=True, default=None)
-    on_air_weeks = models.IntegerField(default=1024)
-    on_air_link = models.URLField(max_length=256, blank=True, default='')
-    dom_on_air_tv = models.CharField(max_length=128, blank=True, default='')
-    dom_on_air_time = models.DateTimeField(blank=True, null=True, default=None)
-    dom_on_air_link = models.URLField(max_length=256, blank=True, default='')
-    episodes = models.IntegerField(default=13)
+    homepage = models.URLField(max_length=256, blank=True, default='', verbose_name='主页')
+    on_air_tv = models.CharField(max_length=128, default='', verbose_name='最速放送')
+    on_air_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='放送时间')
+    on_air_weeks = models.IntegerField(default=1024, verbose_name='播出时长(周)')
+    on_air_link = models.URLField(max_length=256, blank=True, default='', verbose_name='放送链接')
+    dom_on_air_tv = models.CharField(max_length=128, blank=True, default='', verbose_name='国内放送')
+    dom_on_air_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='国内放送时间')
+    dom_on_air_link = models.URLField(max_length=256, blank=True, default='', verbose_name='国内放送链接')
+    episodes = models.IntegerField(default=13, verbose_name='话数')
     #on_air = models.ForeignKey(OnAirInfo, blank=True, null=True, default=None, related_name='anime_set')
     #on_air_domestic = models.ForeignKey(OnAirInfo, blank=True, null=True, default=None, related_name='anime_domestic_set')
     #on_air_ext = models.ManyToManyField(OnAirInfo, blank=True, related_name='anime_ext_set')
-    image = models.ImageField(upload_to='images/anime/cover', max_length=256, blank=True)
-    studio = models.ForeignKey(Studio, blank=True, null=True, default=None)
-    comment = models.TextField(blank=True, default='')
+    image = models.ImageField(upload_to='images/anime/cover', max_length=256, blank=True, verbose_name='封面')
+    studio = models.ForeignKey(Studio, blank=True, null=True, default=None, verbose_name='制作公司') # TODO: manytomany
+    comment = models.TextField(blank=True, default='', verbose_name='备注')
 
     def save(self, *args, **kwargs):
         if not self.dom_on_air_tv and self.dom_on_air_link:
@@ -67,33 +68,69 @@ class OnAirInfo(models.Model):
             self.tv_station = utils.guess_tv_name(self.link)
         super(OnAirInfo, self).save(*args, **kwargs)
 
+class Character(models.Model):
+
+    def __str__(self):
+        return '%s(%s)' % (self.name, self.anime)
+
+    name = models.CharField(max_length=128, db_index=True)
+    alias = models.CharField(max_length=128, db_index=True, blank=True, default='')
+    anime = models.ForeignKey(Anime)
+
 class Person(models.Model):
     def __str__(self):
         return self.name
 
     name = models.CharField(max_length=128, db_index=True)
+    alias = models.CharField(max_length=128, db_index=True, blank=True, default='')
     image = models.ImageField(upload_to='images/person', max_length=256, blank=True)
 
 class Staff(models.Model):
-    _TITLES = {
-        (1,'原作','original'),
-        (2,'监督','director'),
-        (2,'系列构成','script plan'),
-        (3,'脚本','script'),
-        (4,'音乐','music'),
-        (4,'音响监督','director of audiography'),
-        (4,'摄影监督','director of photography'),
-        (4,'演出','impresario'),
-        (5,'总作画监督','chief animation director'),
-        (5,'作画监督','animation director'),
-        (5,'分镜','storyboard'),
-        (5,'色彩设定','color design'),
-        (5,'制作进行','production assistant'),
-        (5,'美术监督','production designer'),
-        (6,'人物设定','character design'),
-    }
+    _TITLES = (
+        (1,'原作',),
+        #(1,'原作','original'),
+        (2,'监督',),
+        #(2,'监督','director'),
+        (3,'系列构成',),
+        #(3,'系列构成','script plan'),
+        (4,'脚本',),
+        #(4,'脚本','script'),
+        (5,'音乐',),
+        #(5,'音乐','music'),
+        (6,'音响监督',),
+        #(6,'音响监督','director of audiography'),
+        (7,'摄影监督',),
+        #(7,'摄影监督','director of photography'),
+        (8,'演出',),
+        #(8,'演出','impresario'),
+        (9,'总作画监督',),
+        #(9,'总作画监督','chief animation director'),
+        (10,'作画监督',),
+        #(10,'作画监督','animation director'),
+        (11,'分镜',),
+        #(11,'分镜','storyboard'),
+        (12,'色彩设定',),
+        #(12,'色彩设定','color design'),
+        (13,'制作进行',),
+        #(13,'制作进行','production assistant'),
+        (14,'美术监督',),
+        #(14,'美术监督','production designer'),
+        (15,'人物设定',),
+        #(15,'人物设定','character design'),
+    )
 
     def __str__(self):
-        return self.title+':'+self.person.name
+        return Staff._TITLES[self.title-1][1]+':'+self.person.name
 
-    title = models.
+    title = models.IntegerField(db_index=True, choices=_TITLES)
+    person = models.ForeignKey(Person)
+    #alias = models.CharField(max_length=128, blank=True)
+    anime = models.ForeignKey(Anime)
+
+class CharacterVoice(models.Model):
+    def __str__(self):
+        return '%s-%s(%s)' % (self.character.name, self.person.name, self.character.anime.title)
+
+    character = models.ForeignKey(Character)
+    person = models.ForeignKey(Person)
+
