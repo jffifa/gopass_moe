@@ -14,7 +14,7 @@ class Studio(models.Model):
         if self.translations:
             return '%s(%s)' % (self.name, self.translations)
         else:
-            return self.title
+            return self.name
 
     name = models.CharField(max_length=128, default='studio', db_index=True)
     #translations = models.ManyToManyField(Translation, blank=True)
