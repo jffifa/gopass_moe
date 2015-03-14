@@ -9,7 +9,7 @@
 <thead>
     <tr>
         <th>Title</th>
-        <th>Translation</th>
+        <th>Alias</th>
         <th>Studio</th>
         <th>TV</th>
         <th>Time</th>
@@ -21,15 +21,15 @@
     {% for a in a_list %}
     <tr data-clickx="1">
         <td>{% if a.homepage %}<a href="{{ a.homepage }}" target="_blank">{% endif %}{{ a.title }}{% if a.homepage %}</a>{% endif %}</td>
-        <td>{% if a.translations %}{{ a.translations }}{% endif %}</td>
-        <td>{{ a.studio.name }}{% if a.studio.translations %}{% endif %}</td>
-        <td>{% if a.on_air_link %}<a href="{{ a.on_air_link}}" target="_blank">{% endif %}
-            {% if a.on_air_tv %}{{ a.on_air_tv }}{% endif %}
-            {% if a.on_air_link %}</a>{% endif %}</td>
-        <td class="{% if a.on_air_time > time_now %}info{% else %}success{% endif %}"><span class="time-nowrap">{{ a.on_air_time_show }}</span>, <span class="time-nowrap">{{ a.on_air_date_show }}</span></td>
-        <td>{% if a.dom_on_air_link %}<a href="{{ a.dom_on_air_link}}" target="_blank">{% endif %}
-            {% if a.dom_on_air_tv %}{{ a.dom_on_air_tv }}{% endif %}{% if a.dom_on_air_link %}</a>{% endif %}
-        {% if a.dom_on_air_link %}/ <span class="time-nowrap">{{ a.dom_on_air_time|date:"H:i, D" }}</span>{% endif %}</td>
+        <td>{% if a.alias %}{{ a.alias }}{% endif %}</td>
+        <td>{{ a.studio }}</td>
+        <td>{% if a.on_air.link %}<a href="{{ a.on_air.link}}" target="_blank">{% endif %}
+            {% if a.on_air.tv %}{{ a.on_air.tv }}{% elif a.on_air.link %}link{% endif %}
+            {% if a.on_air.link %}</a>{% endif %}</td>
+        <td class="{% if a.on_air.time > time_now %}info{% else %}success{% endif %}"><span class="time-nowrap">{{ a.on_air_time_show }}</span>, <span class="time-nowrap">{{ a.on_air_date_show }}</span></td>
+        <td>{% if a.dom_on_air.link %}<a href="{{ a.dom_on_air.link }}" target="_blank">{% endif %}
+            {% if a.dom_on_air.tv %}{{ a.dom_on_air.tv }}{% elif a.dom_on_air.link %}link{% endif %}{% if a.dom_on_air.link %}</a>{% endif %}
+        {% if a.dom_on_air.time %}/ <span class="time-nowrap">{{ a.dom_on_air.time|date:"H:i, D" }}</span>{% endif %}</td>
     </tr>
     {% endfor %}
     {% if not forloop.last %}<tr><td colspan="6"></td></tr>{% endif %}

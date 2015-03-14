@@ -76,7 +76,7 @@ class OnAir(models.Model):
 
     type = models.IntegerField(choices=_TYPE_CHOICES, default=_TYPE_EXTRA, verbose_name='放送类型')
     tv = models.CharField(max_length=128, blank=True, default='', verbose_name='电视台')
-    time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='放送时间')
+    time = models.DateTimeField(blank=True, null=True, default=None, db_index=True, verbose_name='放送时间')
     link = models.URLField(max_length=256, blank=True, default='', verbose_name='放送链接')
     anime = models.ForeignKey(Anime)
 

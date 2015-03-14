@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from kotoridb.models import Anime
+from kotoridb.models import Anime, OnAir
 import pytz
 from django.utils import timezone
 import datetime
@@ -32,14 +32,23 @@ def on_air(request):
 
     now = timezone.now()
     td_before = datetime.timedelta(weeks=4)
-    animes = Anime.objects.filter(on_air_time__lte=now+td_before).order_by('on_air_time')
+    on_airs = OnAir.objects.filter(time__lte=now+td_before).select_related('anime').order_by('time')
+    animes = {}
+    for oa in on_airs:
+        if oa.type==OnAir._TYPE_FIRSTHAND and \
+            oa.time and \
+            oa.time+datetime.timedelta(weeks=oa.anime.on_air_weeks)>now:
+            animes[oa.anime.id] = oa.anime
+            animes[oa.anime.id].on_air = oa
+        elif oa.type == OnAir._TYPE_DOM and oa.anime.id in animes:
+            animes[oa.anime.id].dom_on_air = oa
+
     on_air_animes = {w:[] for w in range(7)}
-    for a in animes:
-        end_time = a.on_air_time + datetime.timedelta(weeks=a.on_air_weeks)
-        if end_time > now:
-            w, a.on_air_time_show, a.on_air_date_show = on_air_time_show(a.on_air_time)
-            a.dom_on_air_time_show = on_air_time_show(a.dom_on_air_time)[1] if a.dom_on_air_time else None
-            on_air_animes[w].append(a)
+    for i, a in animes.items():
+        w, a.on_air_time_show, a.on_air_date_show = on_air_time_show(a.on_air.time)
+        a.dom_on_air_time_show = on_air_time_show(a.dom_on_air.time)[1] if hasattr(a,'dom_on_air_time') else None
+        a.studio = ', '.join([str(s) for s in a.studios.all()])
+        on_air_animes[w].append(a)
 
     context = nav_context()
     context['animes'] = on_air_animes
