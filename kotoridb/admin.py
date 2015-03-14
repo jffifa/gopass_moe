@@ -3,17 +3,17 @@ from kotoridb.models import Anime, Studio, Staff, Person, OnAir, AnimeCharacter
 import autocomplete_light
 from django.utils import timezone
 
-class AnimeStaffInline(admin.TabularInline):
+class AnimeStaffInline(admin.StackedInline):
     form = autocomplete_light.modelform_factory(Staff)
     model= Staff
     extra= 0
 
-class AnimeCharacterInline(admin.TabularInline):
+class AnimeCharacterInline(admin.StackedInline):
     form = autocomplete_light.modelform_factory(AnimeCharacter)
     model = AnimeCharacter
     extra = 0
 
-class OnAirInline(admin.TabularInline):
+class OnAirInline(admin.StackedInline):
     form = autocomplete_light.modelform_factory(OnAir)
     model = OnAir
     extra = 0
