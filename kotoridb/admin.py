@@ -1,15 +1,17 @@
 from django.contrib import admin
-from kotoridb.models import Anime, OnAirInfo, Studio, Staff, Person, OnAir
+from kotoridb.models import Anime, Studio, Staff, Person, OnAir, AnimeCharacter
 import autocomplete_light
-
-class AnimeOnAirInline(admin.TabularInline):
-    model=OnAirInfo
-    extra=0
+from django.utils import timezone
 
 class AnimeStaffInline(admin.TabularInline):
     form = autocomplete_light.modelform_factory(Staff)
-    model=Staff
-    extra=0
+    model= Staff
+    extra= 0
+
+class AnimeCharacterInline(admin.TabularInline):
+    form = autocomplete_light.modelform_factory(AnimeCharacter)
+    model = AnimeCharacter
+    extra = 0
 
 class OnAirInline(admin.TabularInline):
     form = autocomplete_light.modelform_factory(OnAir)
@@ -22,16 +24,26 @@ class AnimeAdmin(admin.ModelAdmin):
     list_display = (
         'title',
         'alias',
-        'studio',
-        'on_air_tv',
-        'on_air_time',
-        'on_air_weeks',
-        'dom_on_air_tv',
-        'dom_on_air_time',
-        'dom_on_air_link',
+        'display_studios',
+        'display_onair',
     )
-    inlines = [AnimeOnAirInline, AnimeStaffInline, OnAirInline]
-    search_fields = ['^title', '^alias', 'studio__name']
+    inlines = [OnAirInline, AnimeStaffInline, AnimeCharacterInline]
+    search_fields = ['^title', '^alias']
+
+    def display_studios(self, obj):
+        return ', '.join(map(lambda x:x.name, obj.studios.all()))
+    display_studios.short_description = '制作公司'
+
+    def display_onair(self, obj):
+        try:
+            oa = obj.onair_set.get(type=1)
+            if oa.time:
+                return oa.tv+' / '+oa.time.astimezone(timezone.get_current_timezone()).strftime('%H:%M:%S, %a, %Y-%m-%d')
+            else:
+                return oa.tv
+        except:
+            return ''
+    display_onair.short_description = '最速放送'
 
 class StudioAdmin(admin.ModelAdmin):
     list_display = (
@@ -51,4 +63,3 @@ admin.site.register(Studio, StudioAdmin)
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(OnAir)
-admin.site.register(OnAirInfo)
