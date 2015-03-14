@@ -57,6 +57,7 @@ class Anime(models.Model):
 class OnAir(models.Model):
     class Meta:
         verbose_name = '放送信息'
+        verbose_name_plural = '放送信息'
 
     def __str__(self):
         if self.time:
