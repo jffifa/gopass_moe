@@ -11,8 +11,8 @@ class Translation(models.Model):
 class Studio(models.Model):
 
     def __str__(self):
-        if self.translations:
-            return '%s(%s)' % (self.name, self.translations)
+        if self.alias:
+            return '%s(%s)' % (self.name, self.alias)
         else:
             return self.name
 
@@ -22,8 +22,8 @@ class Studio(models.Model):
 class Anime(models.Model):
 
     def __str__(self):
-        if self.translations:
-            return '%s(%s)' % (self.title, self.translations)
+        if self.alias:
+            return '%s(%s)' % (self.title, self.alias)
         else:
             return self.title
 
