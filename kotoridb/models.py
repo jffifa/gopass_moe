@@ -83,7 +83,7 @@ class OnAir(models.Model):
     def save(self, *args, **kwargs):
         if not self.tv and self.link:
             self.tv = utils.guess_tv_name(self.link)
-        super(OnAirInfo, self).save(*args, **kwargs)
+        super(OnAir, self).save(*args, **kwargs)
 
 class Character(models.Model):
     class Meta:
