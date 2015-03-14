@@ -17,8 +17,7 @@ class Studio(models.Model):
             return self.name
 
     name = models.CharField(max_length=128, default='studio', db_index=True)
-    translations = models.CharField(max_length=128, blank=True, default='', db_index=True)
-    alias = models.CharField(max_length=128, blank=True, default='', db_index=True)
+    alias = models.CharField(max_length=128, blank=True, default='', db_index=True, verbose_name='译名')
 
 class Anime(models.Model):
 
@@ -30,8 +29,7 @@ class Anime(models.Model):
 
 
     title = models.CharField(max_length=128, default='title', db_index=True, verbose_name='标题')
-    translations = models.CharField(max_length=128, blank=True, default='', db_index=True, verbose_name='译名')
-    alias = models.CharField(max_length=128, blank=True, default='', db_index=True)
+    alias = models.CharField(max_length=128, blank=True, default='', db_index=True, verbose_name='译名')
     homepage = models.URLField(max_length=256, blank=True, default='', verbose_name='主页')
     on_air_tv = models.CharField(max_length=128, default='', verbose_name='最速放送')
     on_air_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='放送时间')

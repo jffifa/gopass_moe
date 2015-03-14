@@ -16,7 +16,7 @@ class AnimeAdmin(admin.ModelAdmin):
 
     list_display = (
         'title',
-        'translations',
+        'alias',
         'studio',
         'on_air_tv',
         'on_air_time',
@@ -26,12 +26,12 @@ class AnimeAdmin(admin.ModelAdmin):
         'dom_on_air_link',
     )
     inlines = [AnimeOnAirInline, AnimeStaffInline]
-    search_fields = ['^title', '^translations', 'studio__name']
+    search_fields = ['^title', '^alias', 'studio__name']
 
 class StudioAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        'translations',
+        'alias',
     )
 
 class StaffAdmin(admin.ModelAdmin):
