@@ -32,21 +32,23 @@ def on_air(request):
 
     now = timezone.now()
     td_before = datetime.timedelta(weeks=4)
-    on_airs = OnAir.objects.filter(time__lte=now+td_before).select_related('anime').order_by('time')
-    animes = {}
+    on_airs = OnAir.objects.filter(time__lte=now+td_before, type=OnAir._TYPE_FIRSTHAND).select_related('anime').order_by('time')
+    animes = []
     for oa in on_airs:
-        if oa.type==OnAir._TYPE_FIRSTHAND and \
-            oa.time and \
-            oa.time+datetime.timedelta(weeks=oa.anime.on_air_weeks)>now:
-            animes[oa.anime.id] = oa.anime
-            animes[oa.anime.id].on_air = oa
-        elif oa.type == OnAir._TYPE_DOM and oa.anime.id in animes:
-            animes[oa.anime.id].dom_on_air = oa
+        if oa.time and oa.time+datetime.timedelta(weeks=oa.anime.on_air_weeks)>now:
+            a = oa.anime
+            a.on_air = oa
+            try:
+                oad = a.onair_set.get(type=OnAir._TYPE_DOM)
+                a.dom_on_air = oad
+            except:
+                pass
+            animes.append(oa.anime)
 
     on_air_animes = {w:[] for w in range(7)}
-    for i, a in animes.items():
+    for a in animes:
         w, a.on_air_time_show, a.on_air_date_show = on_air_time_show(a.on_air.time)
-        a.dom_on_air_time_show = on_air_time_show(a.dom_on_air.time)[1] if hasattr(a,'dom_on_air_time') else None
+        a.dom_on_air_time_show = on_air_time_show(a.dom_on_air.time)[1] if hasattr(a,'dom_on_air') and a.dom_on_air.time else None
         a.studio = ', '.join([str(s) for s in a.studios.all()])
         on_air_animes[w].append(a)
 
