@@ -9,6 +9,8 @@ class Translation(models.Model):
 """
 
 class Studio(models.Model):
+    class Meta:
+        verbose_name = '制作公司'
 
     def __str__(self):
         if self.alias:
@@ -20,6 +22,8 @@ class Studio(models.Model):
     alias = models.CharField(max_length=128, blank=True, default='', db_index=True, verbose_name='译名')
 
 class Anime(models.Model):
+    class Meta:
+        verbose_name = '动画'
 
     def __str__(self):
         if self.alias:
@@ -39,12 +43,13 @@ class Anime(models.Model):
     dom_on_air_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='国内放送时间')
     dom_on_air_link = models.URLField(max_length=256, blank=True, default='', verbose_name='国内放送链接')
     episodes = models.IntegerField(default=13, verbose_name='话数')
-    #on_air = models.ForeignKey(OnAirInfo, blank=True, null=True, default=None, related_name='anime_set')
-    #on_air_domestic = models.ForeignKey(OnAirInfo, blank=True, null=True, default=None, related_name='anime_domestic_set')
-    #on_air_ext = models.ManyToManyField(OnAirInfo, blank=True, related_name='anime_ext_set')
     image = models.ImageField(upload_to='images/anime/cover', max_length=256, blank=True, verbose_name='封面')
     studio = models.ForeignKey(Studio, blank=True, null=True, default=None, verbose_name='制作公司') # TODO: manytomany
+    studios = models.ManyToManyField(Studio, blank=True, verbose_name='制作公司')
     comment = models.TextField(blank=True, default='', verbose_name='备注')
+
+    staffs = models.ManyToManyField(Person, through='Staff', through_fields=('anime', 'person'))
+    cvs = models.ManyToManyField(Person, through='AnimeCharacter', through_fields=('anime', 'cv'))
 
     def save(self, *args, **kwargs):
         if not self.dom_on_air_tv and self.dom_on_air_link:
@@ -66,13 +71,50 @@ class OnAirInfo(models.Model):
             self.tv_station = utils.guess_tv_name(self.link)
         super(OnAirInfo, self).save(*args, **kwargs)
 
-class Character(models.Model):
+class OnAir(models.Model):
+    class Meta:
+        verbose_name = '放送信息'
 
     def __str__(self):
-        return '%s(%s)' % (self.name, self.anime)
+        if self.time:
+            return self.tv+'/'+str(self.time)
+        else:
+            return self.tv
+
+    _TYPE_FIRSTHAND = 1
+    _TYPE_DOM = 2
+    _TYPE_EXTRA = 3
+
+    _TYPE_CHOICES = (
+        (_TYPE_FIRSTHAND, '最速放送'),
+        (_TYPE_DOM, '国内官方'),
+        (_TYPE_EXTRA, '其他'),
+    )
+
+    type = models.IntegerField(choices=_TYPE_CHOICES, default=_TYPE_EXTRA)
+    tv = models.CharField(max_length=128, blank=True, default='')
+    time = models.DateTimeField(blank=True, null=True, default=None)
+    link = models.URLField(max_length=256, blank=True, default='')
+    anime = models.ForeignKey(Anime)
+
+class Character(models.Model):
+    class Meta:
+        abstract = True
 
     name = models.CharField(max_length=128, db_index=True)
     alias = models.CharField(max_length=128, db_index=True, blank=True, default='')
+
+class AnimeCharacter(Character):
+    class Meta:
+        verbose_name = '动画角色'
+
+    def __str__(self):
+        if self.cv:
+            return '%s-%s(%s)' % (self.name, self.cv.name, self.anime.title)
+        else:
+            return '%s(%s)' % (self.name, self.anime.title)
+
+    cv = models.ForeignKey(Person, blank=True, null=True, default=None)
     anime = models.ForeignKey(Anime)
 
 class Person(models.Model):
@@ -86,35 +128,20 @@ class Person(models.Model):
 class Staff(models.Model):
     _TITLES = (
         (1,'原作',),
-        #(1,'原作','original'),
         (2,'监督',),
-        #(2,'监督','director'),
         (3,'系列构成',),
-        #(3,'系列构成','script plan'),
         (4,'脚本',),
-        #(4,'脚本','script'),
         (5,'音乐',),
-        #(5,'音乐','music'),
         (6,'音响监督',),
-        #(6,'音响监督','director of audiography'),
         (7,'摄影监督',),
-        #(7,'摄影监督','director of photography'),
         (8,'演出',),
-        #(8,'演出','impresario'),
         (9,'总作画监督',),
-        #(9,'总作画监督','chief animation director'),
         (10,'作画监督',),
-        #(10,'作画监督','animation director'),
         (11,'分镜',),
-        #(11,'分镜','storyboard'),
         (12,'色彩设定',),
-        #(12,'色彩设定','color design'),
         (13,'制作进行',),
-        #(13,'制作进行','production assistant'),
         (14,'美术监督',),
-        #(14,'美术监督','production designer'),
         (15,'人物设定',),
-        #(15,'人物设定','character design'),
     )
 
     def __str__(self):
@@ -124,11 +151,4 @@ class Staff(models.Model):
     person = models.ForeignKey(Person)
     #alias = models.CharField(max_length=128, blank=True)
     anime = models.ForeignKey(Anime)
-
-class CharacterVoice(models.Model):
-    def __str__(self):
-        return '%s-%s(%s)' % (self.character.name, self.person.name, self.character.anime.title)
-
-    character = models.ForeignKey(Character)
-    person = models.ForeignKey(Person)
 
