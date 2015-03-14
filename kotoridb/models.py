@@ -3,10 +3,6 @@ from django.db import models
 from kotoridb import utils
 
 # Create your models here.
-"""
-class Translation(models.Model):
-    name = models.CharField(max_length=128, db_index=True)
-"""
 
 class Studio(models.Model):
     class Meta:
@@ -20,6 +16,14 @@ class Studio(models.Model):
 
     name = models.CharField(max_length=128, default='studio', db_index=True)
     alias = models.CharField(max_length=128, blank=True, default='', db_index=True, verbose_name='译名')
+
+class Person(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=128, db_index=True)
+    alias = models.CharField(max_length=128, db_index=True, blank=True, default='')
+    image = models.ImageField(upload_to='images/person', max_length=256, blank=True)
 
 class Anime(models.Model):
     class Meta:
@@ -44,12 +48,12 @@ class Anime(models.Model):
     dom_on_air_link = models.URLField(max_length=256, blank=True, default='', verbose_name='国内放送链接')
     episodes = models.IntegerField(default=13, verbose_name='话数')
     image = models.ImageField(upload_to='images/anime/cover', max_length=256, blank=True, verbose_name='封面')
-    studio = models.ForeignKey(Studio, blank=True, null=True, default=None, verbose_name='制作公司') # TODO: manytomany
+    studio = models.ForeignKey(Studio, blank=True, null=True, default=None, verbose_name='制作公司', related_name='anime_studios') # TODO: manytomany
     studios = models.ManyToManyField(Studio, blank=True, verbose_name='制作公司')
     comment = models.TextField(blank=True, default='', verbose_name='备注')
 
-    staffs = models.ManyToManyField(Person, through='Staff', through_fields=('anime', 'person'))
-    cvs = models.ManyToManyField(Person, through='AnimeCharacter', through_fields=('anime', 'cv'))
+    staffs = models.ManyToManyField(Person, through='Staff', through_fields=('anime', 'person'), related_name='anime_staffs')
+    cvs = models.ManyToManyField(Person, through='AnimeCharacter', through_fields=('anime', 'cv'), related_name='anime_cvs')
 
     def save(self, *args, **kwargs):
         if not self.dom_on_air_tv and self.dom_on_air_link:
@@ -117,14 +121,6 @@ class AnimeCharacter(Character):
     cv = models.ForeignKey(Person, blank=True, null=True, default=None)
     anime = models.ForeignKey(Anime)
 
-class Person(models.Model):
-    def __str__(self):
-        return self.name
-
-    name = models.CharField(max_length=128, db_index=True)
-    alias = models.CharField(max_length=128, db_index=True, blank=True, default='')
-    image = models.ImageField(upload_to='images/person', max_length=256, blank=True)
-
 class Staff(models.Model):
     _TITLES = (
         (1,'原作',),
@@ -149,6 +145,5 @@ class Staff(models.Model):
 
     title = models.IntegerField(db_index=True, choices=_TITLES)
     person = models.ForeignKey(Person)
-    #alias = models.CharField(max_length=128, blank=True)
     anime = models.ForeignKey(Anime)
 

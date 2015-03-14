@@ -1,5 +1,5 @@
 from django.contrib import admin
-from kotoridb.models import Anime, OnAirInfo, Studio, Staff, CharacterVoice, Person, Character
+from kotoridb.models import Anime, OnAirInfo, Studio, Staff, Person, OnAir
 import autocomplete_light
 
 class AnimeOnAirInline(admin.TabularInline):
@@ -10,6 +10,11 @@ class AnimeStaffInline(admin.TabularInline):
     form = autocomplete_light.modelform_factory(Staff)
     model=Staff
     extra=0
+
+class OnAirInline(admin.TabularInline):
+    form = autocomplete_light.modelform_factory(OnAir)
+    model = OnAir
+    extra = 0
 
 class AnimeAdmin(admin.ModelAdmin):
     form = autocomplete_light.modelform_factory(Anime)
@@ -25,7 +30,7 @@ class AnimeAdmin(admin.ModelAdmin):
         'dom_on_air_time',
         'dom_on_air_link',
     )
-    inlines = [AnimeOnAirInline, AnimeStaffInline]
+    inlines = [AnimeOnAirInline, AnimeStaffInline, OnAirInline]
     search_fields = ['^title', '^alias', 'studio__name']
 
 class StudioAdmin(admin.ModelAdmin):
@@ -45,3 +50,5 @@ admin.site.register(Anime, AnimeAdmin)
 admin.site.register(Studio, StudioAdmin)
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(Person, PersonAdmin)
+admin.site.register(OnAir)
+admin.site.register(OnAirInfo)
