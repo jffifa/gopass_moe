@@ -17,17 +17,6 @@ def nav_context():
     }}
     return nav_context
 
-def on_air_time_show(t):
-    TZ = pytz.timezone('Asia/Shanghai')
-    t = t.astimezone(TZ)
-
-    if int(t.strftime('%H')) <= 4:
-        h = 24+int(t.strftime('%H'))
-        tt = t - datetime.timedelta(days=1)
-        return (int(tt.strftime('%w')), str(h)+tt.strftime(':%M, %a'), tt.strftime('%Y-%m-%d'))
-    else:
-        return (int(t.strftime('%w')), t.strftime('%H:%M, %a'), t.strftime('%Y-%m-%d'))
-
 def on_air(request):
 
     now = timezone.now()
@@ -47,16 +36,13 @@ def on_air(request):
 
     on_air_animes = {w:[] for w in range(7)}
     for a in animes:
-        w, a.on_air_time_show, a.on_air_date_show = on_air_time_show(a.on_air.time)
-        a.dom_on_air_time_show = on_air_time_show(a.dom_on_air.time)[1] if hasattr(a,'dom_on_air') and a.dom_on_air.time else None
         a.studio = ', '.join([str(s) for s in a.studios.all()])
-        on_air_animes[w].append(a)
 
     context = nav_context()
-    context['animes'] = on_air_animes
+    context['animes'] = animes
     context['time_now'] = now
 
-    timezone.activate(pytz.timezone('Asia/Shanghai'))
+    timezone.activate(pytz.timezone('UTC'))
     return render(request, 'kotoridb/on_air.html', context)
     #return HttpResponse(str(on_air_animes))
 
