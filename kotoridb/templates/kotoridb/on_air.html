@@ -88,6 +88,7 @@ animes.push({
 });
 {% endfor %}
 $('ul#nav-day li').on('click', function(){
+    now = new Date();
     $('ul#nav-day li').removeClass('active');
     $(this).addClass('active');
     $('tbody.on-air-table').children().remove();
@@ -108,7 +109,10 @@ $('ul#nav-day li').on('click', function(){
             row.append('<td>'+a.alias+'</td>');
             col = row.append('<td>').children(':last-child');
             col.append(tx(a.on_air_tv, a.on_air_link));
-            row.append('<td>'+dispTime.disp+'</td>');
+            col = row.append('<td>'+dispTime.disp+'</td>').children(':last-child');
+            if (a.on_air_time > now) {
+                col.addClass('info');
+            }
             col = row.append('<td>').children(':last-child');
             col.append(tx(a.dom_on_air_tv, a.dom_on_air_link));
         }
