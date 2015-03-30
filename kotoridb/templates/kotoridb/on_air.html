@@ -151,9 +151,9 @@ $('ul#nav-day li').on('click', function(){
             var idx = parseInt($(this).attr('anime-index'));
             var a = animes[idx];
             var div = tr_info.attr('data-click-show', '1').append('<td colspan="6">').children();
-            div.append('<h1 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h1>');
+            div.append('<h2 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h2>');
             div = div.append('<div class="row">\
-                <div class="col-sm-4"><img class="item-img" src="'+a.cover+'"></div>\
+                <div class="col-sm-3"><img class="item-img" src="'+a.cover+'"></div>\
                 <div class="col-sm-4"></div>\
                 <div class="col-sm-4"></div>\
                 </div>').children();
