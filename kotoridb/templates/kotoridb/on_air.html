@@ -153,10 +153,9 @@ $('ul#nav-day li').on('click', function(){
             var div = tr_info.attr('data-click-show', '1').append('<td colspan="6">').children();
             div.append('<h1 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h1>');
             div = div.append('<div class="row">\
-                <div class="col-sm-3"><img class="item-img" src="'+a.cover+'"></div>\
-                <div class="col-sm-3"></div>\
-                <div class="col-sm-3"></div>\
-                <div class="col-sm-3"></div>\
+                <div class="col-sm-4"><img class="item-img" src="'+a.cover+'"></div>\
+                <div class="col-sm-4"></div>\
+                <div class="col-sm-4"></div>\
                 </div>').children();
             var items = new Array();
             var dispTime = getDisplayTime(a.on_air_time)
@@ -182,16 +181,13 @@ $('ul#nav-day li').on('click', function(){
                 else
                     return '<div class="item-list"><div class="item-list-key">'+k+'</div><div class="item-list-value">'+v+'</div><div class="item-list-clr"></div></div>';
             }
-            var colLen = Math.max(12,Math.ceil(items.length/3));
+            var colLen = Math.max(12,Math.ceil(items.length/2));
             //assume the total length is less than 36
             for (i=0; i<Math.min(colLen,items.length); ++i) {
                 div.children('div:nth-child(2)').append(getContent(items[i].k,items[i].v));
             }
             for (i=colLen; i<Math.min(colLen*2,items.length); ++i) {
                 div.children('div:nth-child(3)').append(getContent(items[i].k,items[i].v));
-            }
-            for (i=colLen*2; i<Math.min(colLen*3,items.length); ++i) {
-                div.children('div:nth-child(4)').append(getContent(items[i].k,items[i].v));
             }
         }
         return false;
