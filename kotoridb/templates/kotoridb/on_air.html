@@ -3,7 +3,7 @@
 {% block title %}gopass.moe - on air{% endblock %}
 {% block header_extra %}
 <style type="text/css">
-h2.item-header {margin-top:9px;font-weight:700}
+h2.item-header {margin-top:9px}
 tr.item-list {background-color:transparent !important}
 div.item-list {margin-bottom:8px}
 span.item-list-key {margin-right:8px;color:#999;font-weight:700}
@@ -152,6 +152,7 @@ $('ul#nav-day li').on('click', function(){
             var idx = parseInt($(this).attr('anime-index'));
             var a = animes[idx];
             var div = tr_info.attr('data-click-show', '1').append('<td colspan="6">').children();
+            var box = div;
             div.append('<h2 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h2>');
             div = div.append('<div class="row">\
                 <div class="col-sm-3"><img class="item-img" src="'+a.cover+'"></div>\
@@ -186,7 +187,7 @@ $('ul#nav-day li').on('click', function(){
                 else
                     return '<div class="item-list"><span class="item-list-key">'+k+'&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="item-list-value">'+v+'</span><div class="item-list-clr"></div></div>';
             }
-            var colLen = Math.max(12,Math.ceil(items.length/2));
+            var colLen = Math.max(14,Math.ceil(items.length/2));
             //assume the total length is less than 36
             for (i=0; i<Math.min(colLen,items.length); ++i) {
                 div.children('div:nth-child(2)').append(getContent(items[i].k,items[i].v));
@@ -194,6 +195,13 @@ $('ul#nav-day li').on('click', function(){
             for (i=colLen; i<Math.min(colLen*2,items.length); ++i) {
                 div.children('div:nth-child(3)').append(getContent(items[i].k,items[i].v));
             }
+            box.wrapInner('<div style="display:none;" />')
+                .parent()
+                .find('td > div')
+                .slideDown(256, function(){
+                    var $set = $(this);
+                    $set.replaceWith($set.contents());
+                });
         }
         return false;
     });
