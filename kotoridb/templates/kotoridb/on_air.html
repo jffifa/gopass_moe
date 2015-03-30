@@ -4,7 +4,7 @@
 {% block header_extra %}
 <style type="text/css">
 h2.item-header {margin-top:9px;font-weight:700}
-td.item-list {background-color:transparent}
+tr.item-list {background-color:transparent}
 div.item-list {margin-bottom:8px}
 span.item-list-key {margin-right:8px;color:#999;font-weight:700}
 span.item-list-value {}
@@ -148,10 +148,10 @@ $('ul#nav-day li').on('click', function(){
             $('tr[data-click-on]').removeAttr('data-click-on');
             $('tr[data-click-show]').remove();
             $(this).attr('data-click-on', '1').after('<tr>');
-            var tr_info = $(this).next('tr');
+            var tr_info = $(this).next('tr').addClass('item-list');
             var idx = parseInt($(this).attr('anime-index'));
             var a = animes[idx];
-            var div = tr_info.attr('data-click-show', '1').append('<td class="item-list" colspan="6">').children();
+            var div = tr_info.attr('data-click-show', '1').append('<td colspan="6">').children();
             div.append('<h2 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h2>');
             div = div.append('<div class="row">\
                 <div class="col-sm-3"><img class="item-img" src="'+a.cover+'"></div>\
@@ -184,7 +184,7 @@ $('ul#nav-day li').on('click', function(){
                 else if (k=='__cv')
                     return '<h3>CAST</h3>';
                 else
-                    return '<div class="item-list"><span class="item-list-key">'+k+'&nbsp;&nbsp;</span><span class="item-list-value">'+v+'</span><div class="item-list-clr"></div></div>';
+                    return '<div class="item-list"><span class="item-list-key">'+k+'&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="item-list-value">'+v+'</span><div class="item-list-clr"></div></div>';
             }
             var colLen = Math.max(12,Math.ceil(items.length/2));
             //assume the total length is less than 36
