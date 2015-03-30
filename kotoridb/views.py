@@ -34,9 +34,16 @@ def on_air(request):
                 pass
             animes.append(oa.anime)
 
-    on_air_animes = {w:[] for w in range(7)}
     for a in animes:
-        a.studio = ', '.join([str(s) for s in a.studios.all()])
+        a.studio = ', '.join([s.name for s in a.studios.all()])
+        a.staff_list = [{
+            'title':s.getTitle(s.title),
+            'staff':s.person.name
+            } for s in a.staff_set.select_related('person').all()]
+        a.cv_list = [{
+            'character':c.name,
+            'cv':c.cv.name
+            } for c in a.animecharacter_set.select_related('cv').all()]
 
     context = nav_context()
     context['animes'] = animes

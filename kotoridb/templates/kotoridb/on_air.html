@@ -1,10 +1,21 @@
 {% extends "kotoridb/base.html" %}
+{% load staticfiles %}
 {% block title %}gopass.moe - on air{% endblock %}
+{% block header_extra %}
+<style type="text/css">
+h1.item-header {margin-top:9px}
+div.item-list {margin-bottom:8px}
+div.item-list-key {float:left;width:82px;margin-right:8px;color:#999;font-weight:700}
+div.item-list-value {float:left}
+div.item-list-clr {clear:both}
+img.item-img {max-width:100%;max-height:100%}
+</style>
+{% endblock %}
 {% block main %}
 <div class="container">
 <div class="row">
 <div class="col-lg-12">
-<h1 class="page-header">On Air Animations</h1>
+<h1 class="page-header">On Air Animations <small>click items for detail</small></h1>
 <ul class="nav nav-pills" style="margin-bottom:10px" id="nav-day">
     <li day="0"><a href="#">周日</a></li>
     <li day="1"><a href="#">周一</a></li>
@@ -22,7 +33,7 @@
         <th>译名</th>
         <th>首播电视台</th>
         <th>首播时间</th>
-        <th>国内官方</th>
+        <th>国内首播</th>
     </tr>
 </thead>
 <tbody class="on-air-table">
@@ -49,20 +60,24 @@ function getDisplayTime(t) {
     if (t.getHours() < hourThres) {
         res.w = (t.getDay()+6)%7;
         t = new Date(t.getFullYear(),t.getMonth(),t.getDate()-1,t.getHours(),t.getMinutes(),t.getSeconds());
-        res.disp = t.getFullYear()+"-"+
-            pad0(t.getMonth()+1)+"-"+
-            pad0(t.getDate())+" "+
+        res.time = 
             pad0(t.getHours()+24)+":"+
             pad0(t.getMinutes())+":"+
             pad0(t.getSeconds());
+        res.date =
+            t.getFullYear()+"-"+
+            pad0(t.getMonth()+1)+"-"+
+            pad0(t.getDate());
     } else {
         res.w = t.getDay();
-        res.disp = t.getFullYear()+"-"+
-            pad0(t.getMonth()+1)+"-"+
-            pad0(t.getDate())+" "+
+        res.time =
             pad0(t.getHours())+":"+
             pad0(t.getMinutes())+":"+
             pad0(t.getSeconds());
+        res.date =
+            t.getFullYear()+"-"+
+            pad0(t.getMonth()+1)+"-"+
+            pad0(t.getDate());
     }
     return res;
 }
@@ -82,9 +97,14 @@ animes.push({
     alias:"{{ a.alias }}",
     on_air_tv:"{{ a.on_air.tv }}",
     on_air_link:"{{ a.on_air.link }}",
-    on_air_time:new Date(Date.UTC({{ a.on_air.time|date:"Y" }},{{ a.on_air.time|date:"m"}}-1,{{ a.on_air.time|date:"d,H,i,s" }})),
+    on_air_time:new Date({{ a.on_air.time|date:"U" }}*1000),
     dom_on_air_tv:"{{ a.dom_on_air.tv }}",
     dom_on_air_link:"{{ a.dom_on_air.link }}",
+    episodes:"{{ a.episodes }}",
+    studio:"{{ a.studio }}",
+    cover:{% if a.image %}"{{ a.image.url }}"{% else %}"{% static 'kotoridb/default-cover.png' %}"{% endif %},
+    staff_list:[{% for s in a.staff_list %}{'title':'{{ s.title }}','staff':'{{ s.staff }}'},{% endfor %}],
+    cv_list:[{% for c in a.cv_list %}{'character':'{{ c.character }}','cv':'{{ c.cv }}'},{% endfor %}],
 });
 {% endfor %}
 $('ul#nav-day li').on('click', function(){
@@ -104,12 +124,14 @@ $('ul#nav-day li').on('click', function(){
         var dispTime = getDisplayTime(a.on_air_time);
         if (filter(dispTime.w)) {
             var row = $('tbody.on-air-table').append('<tr>').children(':last-child');
+            row.attr('anime-index',i);
+            row.attr('data-click','1');
             var col = row.append('<td>').children(':last-child');
             col.append(tx(a.title, a.homepage));
             row.append('<td>'+a.alias+'</td>');
             col = row.append('<td>').children(':last-child');
             col.append(tx(a.on_air_tv, a.on_air_link));
-            col = row.append('<td>'+dispTime.disp+'</td>').children(':last-child');
+            col = row.append('<td>'+dispTime.time+', '+dispTime.date+'</td>').children(':last-child');
             if (a.on_air_time > now) {
                 col.addClass('info');
             }
@@ -117,30 +139,69 @@ $('ul#nav-day li').on('click', function(){
             col.append(tx(a.dom_on_air_tv, a.dom_on_air_link));
         }
     }
+    $('tr[data-click]').on('click',function(){
+        if ($(this).attr('data-click-on')) {
+            $(this).removeAttr('data-click-on');
+            $(this).next('tr[data-click-show]').remove();
+        } else {
+            $('tr[data-click-on]').removeAttr('data-click-on');
+            $('tr[data-click-show]').remove();
+            $(this).attr('data-click-on', '1').after('<tr>');
+            var tr_info = $(this).next('tr');
+            var idx = parseInt($(this).attr('anime-index'));
+            var a = animes[idx];
+            var div = tr_info.attr('data-click-show', '1').append('<td colspan="6">').children();
+            div.append('<h1 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h1>');
+            div = div.append('<div class="row">\
+                <div class="col-sm-3"><img class="item-img" src="'+a.cover+'"></div>\
+                <div class="col-sm-3"></div>\
+                <div class="col-sm-3"></div>\
+                <div class="col-sm-3"></div>\
+                </div>').children();
+            var items = new Array();
+            var dispTime = getDisplayTime(a.on_air_time)
+            items.push({'k':'首播时间','v':dayDisp[dispTime.w]+' '+dispTime.time});
+            items.push({'k':'首播日期','v':dispTime.date});
+            items.push({'k':'话数','v':a.episodes});
+            items.push({'k':'动画制作','v':a.studio});
+            items.push({'k':'官方网站','v':a.homepage});
+            items.push({'k':'__staff'});
+            for (i=0; i<a.staff_list.length; i++) {
+                items.push({'k':a.staff_list[i].title, 'v':a.staff_list[i].staff});
+            }
+            items.push({'k':'__cv'});
+            for (i=0; i<a.cv_list.length; i++) {
+                items.push({'k':a.cv_list[i].character, 'v':a.cv_list[i].cv});
+            }
+            
+            function getContent(k, v) {
+                if (k=='__staff')
+                    return '<h3>STAFF</h3>';
+                else if (k=='__cv')
+                    return '<h3>CAST</h3>';
+                else
+                    return '<div class="item-list"><div class="item-list-key">'+k+'</div><div class="item-list-value">'+v+'</div><div class="item-list-clr"></div></div>';
+            }
+            var colLen = Math.max(12,Math.ceil(items.length/3));
+            //assume the total length is less than 36
+            for (i=0; i<Math.min(colLen,items.length); ++i) {
+                div.children('div:nth-child(2)').append(getContent(items[i].k,items[i].v));
+            }
+            for (i=colLen; i<Math.min(colLen*2,items.length); ++i) {
+                div.children('div:nth-child(3)').append(getContent(items[i].k,items[i].v));
+            }
+            for (i=colLen*2; i<Math.min(colLen*3,items.length); ++i) {
+                div.children('div:nth-child(4)').append(getContent(items[i].k,items[i].v));
+            }
+        }
+        return false;
+    });
+    $('tr[data-click] td a').click(function(e) {
+        e.stopPropagation();
+    });
 });
 $('ul#nav-day li[day='+(getDisplayTime(new Date()).w)+']').click();
 
-$('tr[data-click]').on('click',function(){
-    if ($(this).attr('data-click-on')) {
-        $(this).removeAttr('data-click-on');
-        $(this).next('tr[data-click-show]').remove();
-    } else {
-        $('tr[data-click-on]').removeAttr('data-click-on');
-        $('tr[data-click-show]').remove();
-        $(this).attr('data-click-on', '1').after('<tr>');
-        var tr_info = $(this).next('tr');
-        tr_info.attr('style', 'height:200px').attr('data-click-show', '1').append('<td colspan="6">');
-    }
-    return false;
-});
-$('tr[data-click] td a').click(function(e) {
-    e.stopPropagation();
-});
-
-/*
-$('ul#nav-day li').on('click',function(){
-    $('ul#nav-day li').removeClass('active'
-*/
 </script>
 {% endblock %}
 
