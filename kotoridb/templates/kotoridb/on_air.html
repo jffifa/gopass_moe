@@ -6,8 +6,8 @@
 h2.item-header {margin-top:9px;font-weight:700}
 td.item-list {background-color:transparent}
 div.item-list {margin-bottom:8px}
-div.item-list-key {float:left;width:94px;margin-right:8px;color:#999;font-weight:700}
-div.item-list-value {float:left}
+span.item-list-key {margin-right:8px;color:#999;font-weight:700}
+span.item-list-value {}
 div.item-list-clr {clear:both}
 img.item-img {max-width:100%;max-height:100%}
 </style>
@@ -184,7 +184,7 @@ $('ul#nav-day li').on('click', function(){
                 else if (k=='__cv')
                     return '<h3>CAST</h3>';
                 else
-                    return '<div class="item-list"><span>'+k+'&nbsp;&nbsp;</span><span>'+v+'</span><div class="item-list-clr"></div></div>';
+                    return '<div class="item-list"><span class="item-list-key">'+k+'&nbsp;&nbsp;</span><span class="item-list-value">'+v+'</span><div class="item-list-clr"></div></div>';
             }
             var colLen = Math.max(12,Math.ceil(items.length/2));
             //assume the total length is less than 36
