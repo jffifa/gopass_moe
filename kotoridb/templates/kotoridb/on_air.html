@@ -163,7 +163,12 @@ $('ul#nav-day li').on('click', function(){
             items.push({'k':'首播日期','v':dispTime.date});
             items.push({'k':'话数','v':a.episodes});
             items.push({'k':'动画制作','v':a.studio});
-            items.push({'k':'官方网站','v':a.homepage});
+            if (a.homepage) {
+                items.push({'k':'官方网站','v':'<a href="'+a.homepage+'">'+a.homepage+'</a>'});
+            } else {
+                items.push({'k':'官方网站','v':a.homepage});
+            } else {
+            }
             items.push({'k':'__staff'});
             for (i=0; i<a.staff_list.length; i++) {
                 items.push({'k':a.staff_list[i].title, 'v':a.staff_list[i].staff});
