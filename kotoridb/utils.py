@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def guess_tv_name(url):
     TV_LIST = {
         'iqiyi':'爱奇艺',
