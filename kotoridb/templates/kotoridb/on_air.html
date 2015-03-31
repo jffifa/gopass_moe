@@ -149,10 +149,21 @@ $('ul#nav-day li').on('click', function(){
             var box = div;
             div.append('<h2 class="page-header item-header">').children('h2').html('&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;')
                 .append('<small>').children('small').html(a.alias);
-            div = div.append('<div class="row">').children(':last-child')
-                .append('<div class="col-sm-4"><img class="item-img" src="'+a.cover+'"></div>')
-                .append('<div class="col-sm-4">')
-                .append('<div class="col-sm-4">');
+            div = div.append('<div class="row">').children('div:last-child')
+                .append('<div class="col-md-4"><img class="item-img" src="'+a.cover+'"></div>')
+                .append('<div class="col-md-8">').children('div:last-child');
+
+            function getItemList(items, div) {
+                function getContent(x) {
+                    return $('<div class="item-list col-md-6">')
+                        .append('<span class="item-list-key">'+x.k+'</span>')
+                        .append('<span class="item-list-value">'+x.v+'</span>');
+                }
+                div = div.append('<div class="row">').children('div:last-child');
+                for (i=0; i<items.length; ++i)
+                    div.append(getContent(items[i]));
+            }
+            // basic info
             var items = new Array();
             var dispTime = getDisplayTime(a.on_air_time);
             items.push({'k':'首播时间','v':dayDisp[dispTime.w]+' '+dispTime.time});
@@ -164,33 +175,23 @@ $('ul#nav-day li').on('click', function(){
             } else {
                 items.push({'k':'官方网站','v':a.homepage});
             }
-            items.push({'k':'__staff'});
+            getItemList(items, div);
+
+            //staff
+            div.append('<h3>STAFF</h3>');
+            items = new Array();
             for (i=0; i<a.staff_list.length; i++) {
-                items.push({'w':5, 'k':a.staff_list[i].title, 'v':a.staff_list[i].staff});
+                items.push({'k':a.staff_list[i].title, 'v':a.staff_list[i].staff});
             }
-            items.push({'k':'__cv'});
+            getItemList(items, div);
+            //cv
+            div.append('<h3>CV</h3>');
+            items = new Array();
             for (i=0; i<a.cv_list.length; i++) {
                 items.push({'k':a.cv_list[i].character, 'v':a.cv_list[i].cv});
             }
-            function getContent(x) {
-                if (x.k=='__staff')
-                    return $('<h3>').html('STAFF');
-                else if (x.k=='__cv')
-                    return $('<h3>').html('CAST');
-                else {
-                    return $('<div class="item-list">')
-                        .append('<span class="item-list-key">'+x.k+'</span>')
-                        .append('<span class="item-list-value">'+x.v+'</span>');
-                }
-            }
+            getItemList(items, div);
 
-            var colLen = Math.max(16,Math.ceil(items.length/2));
-            for (i=0; i<Math.min(colLen,items.length); ++i) {
-                div.children('div:nth-child(2)').append(getContent(items[i]));
-            }
-            for (i=colLen; i<Math.min(colLen*2,items.length); ++i) {
-                div.children('div:nth-child(3)').append(getContent(items[i]));
-            }
             var content = div.find('span.item-list-key, h3');
             var mwidth = 0, sep = 0;
             for (i=0; i<content.length; ++i) {
