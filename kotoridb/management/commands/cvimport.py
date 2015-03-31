@@ -51,7 +51,7 @@ class Command(BaseCommand):
                     try:
                         anime = Anime.objects.get(alias=anime_name)
                     except ObjectDoesNotExist:
-                        warn_print('anime [%s] not found. ignored.' % (anime_name,))
+                        warn_print('anime [%s] not found, ignored' % (anime_name,))
                         continue
                 chs = anime.animecharacter_set.all()
                 continue
@@ -59,8 +59,11 @@ class Command(BaseCommand):
             if not anime:
                 continue
 
-            character, cv = re.sub(r'( ){2,}', r'|', line, 1).split('|')
-            character, cv = self.deal_str(character), self.deal_str(cv)
+            try:
+                character, cv = re.sub(r'( ){2,}', r'|', line, 1).split('|')
+                character, cv = self.deal_str(character), self.deal_str(cv)
+            except ValueError:
+                warn_print('failed to unpack %s for anime %s, ignored' % (line, anime.title))
             #print(character, cv)
 
             if not character or not cv:
