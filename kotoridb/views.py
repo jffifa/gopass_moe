@@ -35,7 +35,7 @@ def on_air(request):
             animes.append(oa.anime)
 
     for a in animes:
-        a.studio = ', '.join([s.name for s in a.studios.all()])
+        a.studio = ', '.join([str(s) for s in a.studios.all()])
         a.staff_list = [{
             'title':s.getTitle(s.title),
             'staff':s.person.name
