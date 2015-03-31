@@ -137,12 +137,18 @@ $('ul#nav-day li').on('click', function(){
     }
     $('tr[data-click]').on('click',function(){
         if ($(this).attr('data-click-on')) {
-            $(this).removeAttr('data-click-on').next('tr[data-click-show]').remove();
-            $(this).children('td:first-child').children('span.glyphicon').remove();
+            $(this).removeAttr('data-click-on').next('tr[data-click-show]').children('td:first-child')
+                .wrapInner('<div style="display: block;" />')
+                .parent()
+                .find('td > div')
+                .slideUp(256, function(){
+                    $(this).parent().parent().prev('tr[data-click]').children('td:first-child').children('span.glyphicon').remove();
+                    $(this).parent().parent().remove();
+                });
         } else {
             $('tr[data-click-on]').removeAttr('data-click-on').children('td:first-child').children('span.glyphicon').remove();
             $('tr[data-click-show]').remove();
-            $(this).children('td:first-child').prepend('<span class="glyphicon glyphicon-chevron-down" style="margin-right:4px">');
+            $(this).children('td:first-child').prepend('<span class="glyphicon glyphicon-chevron-right" style="margin-right:8px">');
             $(this).attr('data-click-on', '1').after('<tr>');
             var tr_info = $(this).next('tr').addClass('item-list');
             var idx = parseInt($(this).attr('anime-index'));
