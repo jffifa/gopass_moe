@@ -138,9 +138,11 @@ $('ul#nav-day li').on('click', function(){
     $('tr[data-click]').on('click',function(){
         if ($(this).attr('data-click-on')) {
             $(this).removeAttr('data-click-on').next('tr[data-click-show]').remove();
+            $(this).children('td:first-child').children('span.glyphicon').remove();
         } else {
-            $('tr[data-click-on]').removeAttr('data-click-on');
+            $('tr[data-click-on]').removeAttr('data-click-on').children('td:first-child').children('span.glyphicon').remove();
             $('tr[data-click-show]').remove();
+            $(this).children('td:first-child').prepend('<span class="glyphicon glyphicon-chevron-down" style="margin-right:4px">');
             $(this).attr('data-click-on', '1').after('<tr>');
             var tr_info = $(this).next('tr').addClass('item-list');
             var idx = parseInt($(this).attr('anime-index'));
@@ -171,7 +173,7 @@ $('ul#nav-day li').on('click', function(){
             items.push({'k':'话数','v':a.episodes});
             items.push({'k':'动画制作','v':a.studio});
             if (a.homepage) {
-                items.push({'k':'官方网站','v':'<a href="'+a.homepage+'">'+a.homepage+'</a>'});
+                items.push({'k':'官方网站','v':'<a target="_blank" href="'+a.homepage+'">'+a.homepage+'</a>'});
             } else {
                 items.push({'k':'官方网站','v':a.homepage});
             }
