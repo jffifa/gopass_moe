@@ -6,10 +6,10 @@
 h2.item-header {margin-top:9px}
 tr.item-list {background-color:transparent !important}
 div.item-list {margin-bottom:8px}
-span.item-list-key {margin-right:8px;color:#999;font-weight:700}
+span.item-list-key {margin-right:8px;color:#999;font-weight:700;display:inline-block}
 span.item-list-value {}
 div.item-list-clr {clear:both}
-img.item-img {max-width:100%;max-height:100%}
+img.item-img {max-width:75%;max-height:75%}
 </style>
 {% endblock %}
 {% block main %}
@@ -47,16 +47,17 @@ img.item-img {max-width:100%;max-height:100%}
 {% block footer_extra %}
 <script type="text/javascript">
 $("li#nav-bangumi").addClass("active");
+
 var dayDisp = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 var hourThres = 4;
-function pad0(x) {
-    if (x < 10) {
-        return "0"+x;
-    } else {
-        return x.toString();
-    }
-}
 function getDisplayTime(t) {
+    function pad0(x) {
+        if (x < 10) {
+            return "0"+x;
+        } else {
+            return x.toString();
+        }
+    }
     var res = new Object();
     if (t.getHours() < hourThres) {
         res.w = (t.getDay()+6)%7;
@@ -82,14 +83,6 @@ function getDisplayTime(t) {
     }
     return res;
 }
-function tx(text, href) {
-    if (href) {
-        return '<a href="'+href+'">'+text+'</a>';
-    } else {
-        return text;
-    }
-}
-
 var animes = new Array();
 {% for a in animes %}
 animes.push({
@@ -109,7 +102,14 @@ animes.push({
 });
 {% endfor %}
 $('ul#nav-day li').on('click', function(){
-    now = new Date();
+    function txa(text, href) {
+        if (href) {
+            return $('<a>').attr('target','_blank').attr('href',href).html(text);
+        } else {
+            return text;
+        }
+    }
+    var now = new Date();
     $('ul#nav-day li').removeClass('active');
     $(this).addClass('active');
     $('tbody.on-air-table').children().remove();
@@ -121,29 +121,23 @@ $('ul#nav-day li').on('click', function(){
             return w==day;
     }
     for (var i=0; i<animes.length; i++) {
-        a=animes[i];
+        var a=animes[i];
         var dispTime = getDisplayTime(a.on_air_time);
         if (filter(dispTime.w)) {
-            var row = $('tbody.on-air-table').append('<tr>').children(':last-child');
-            row.attr('anime-index',i);
-            row.attr('data-click','1');
-            var col = row.append('<td>').children(':last-child');
-            col.append(tx(a.title, a.homepage));
-            row.append('<td>'+a.alias+'</td>');
-            col = row.append('<td>').children(':last-child');
-            col.append(tx(a.on_air_tv, a.on_air_link));
-            col = row.append('<td>'+dispTime.time+', '+dispTime.date+'</td>').children(':last-child');
+            var row = $('tbody.on-air-table').append('<tr>').children(':last-child').attr('anime-index',i).attr('data-click','1');
+            var col = row.append('<td>').children(':last-child').append(txa(a.title, a.homepage));
+            col = row.append('<td>').children(':last-child').html(a.alias);
+            col = row.append('<td>').children(':last-child').append(txa(a.on_air_tv, a.on_air_link));
+            col = row.append('<td>').children(':last-child').html(dispTime.time+', '+dispTime.date);
             if (a.on_air_time > now) {
                 col.addClass('info');
             }
-            col = row.append('<td>').children(':last-child');
-            col.append(tx(a.dom_on_air_tv, a.dom_on_air_link));
+            col = row.append('<td>').children(':last-child').append(txa(a.dom_on_air_tv, a.dom_on_air_link));
         }
     }
     $('tr[data-click]').on('click',function(){
         if ($(this).attr('data-click-on')) {
-            $(this).removeAttr('data-click-on');
-            $(this).next('tr[data-click-show]').remove();
+            $(this).removeAttr('data-click-on').next('tr[data-click-show]').remove();
         } else {
             $('tr[data-click-on]').removeAttr('data-click-on');
             $('tr[data-click-show]').remove();
@@ -151,16 +145,16 @@ $('ul#nav-day li').on('click', function(){
             var tr_info = $(this).next('tr').addClass('item-list');
             var idx = parseInt($(this).attr('anime-index'));
             var a = animes[idx];
-            var div = tr_info.attr('data-click-show', '1').append('<td colspan="6">').children();
+            var div = tr_info.attr('data-click-show', '1').append('<td colspan="5">').children();
             var box = div;
-            div.append('<h2 class="page-header item-header">&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;<small>'+a.alias+'</small></h2>');
-            div = div.append('<div class="row">\
-                <div class="col-sm-3"><img class="item-img" src="'+a.cover+'"></div>\
-                <div class="col-sm-4"></div>\
-                <div class="col-sm-4"></div>\
-                </div>').children();
+            div.append('<h2 class="page-header item-header">').children('h2').html('&nbsp;&nbsp;'+a.title+'&nbsp;&nbsp;')
+                .append('<small>').children('small').html(a.alias);
+            div = div.append('<div class="row">').children(':last-child')
+                .append('<div class="col-sm-4"><img class="item-img" src="'+a.cover+'"></div>')
+                .append('<div class="col-sm-4">')
+                .append('<div class="col-sm-4">');
             var items = new Array();
-            var dispTime = getDisplayTime(a.on_air_time)
+            var dispTime = getDisplayTime(a.on_air_time);
             items.push({'k':'首播时间','v':dayDisp[dispTime.w]+' '+dispTime.time});
             items.push({'k':'首播日期','v':dispTime.date});
             items.push({'k':'话数','v':a.episodes});
@@ -172,28 +166,49 @@ $('ul#nav-day li').on('click', function(){
             }
             items.push({'k':'__staff'});
             for (i=0; i<a.staff_list.length; i++) {
-                items.push({'k':a.staff_list[i].title, 'v':a.staff_list[i].staff});
+                items.push({'w':5, 'k':a.staff_list[i].title, 'v':a.staff_list[i].staff});
             }
             items.push({'k':'__cv'});
             for (i=0; i<a.cv_list.length; i++) {
                 items.push({'k':a.cv_list[i].character, 'v':a.cv_list[i].cv});
             }
-            
-            function getContent(k, v) {
-                if (k=='__staff')
-                    return '<h3>STAFF</h3>';
-                else if (k=='__cv')
-                    return '<h3>CAST</h3>';
-                else
-                    return '<div class="item-list"><span class="item-list-key">'+k+'&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="item-list-value">'+v+'</span><div class="item-list-clr"></div></div>';
+            function getContent(x) {
+                if (x.k=='__staff')
+                    return $('<h3>').html('STAFF');
+                else if (x.k=='__cv')
+                    return $('<h3>').html('CAST');
+                else {
+                    return $('<div class="item-list">')
+                        .append('<span class="item-list-key">'+x.k+'</span>')
+                        .append('<span class="item-list-value">'+x.v+'</span>');
+                }
             }
-            var colLen = Math.max(14,Math.ceil(items.length/2));
-            //assume the total length is less than 36
+
+            var colLen = Math.max(16,Math.ceil(items.length/2));
             for (i=0; i<Math.min(colLen,items.length); ++i) {
-                div.children('div:nth-child(2)').append(getContent(items[i].k,items[i].v));
+                div.children('div:nth-child(2)').append(getContent(items[i]));
             }
             for (i=colLen; i<Math.min(colLen*2,items.length); ++i) {
-                div.children('div:nth-child(3)').append(getContent(items[i].k,items[i].v));
+                div.children('div:nth-child(3)').append(getContent(items[i]));
+            }
+            var content = div.find('span.item-list-key, h3');
+            var mwidth = 0, sep = 0;
+            for (i=0; i<content.length; ++i) {
+                var c = $(content[i]);
+                if (c.prop('tagName') == 'H3') {
+                    for (j=sep; j<i; ++j) {
+                        $(content[j]).css('width', (mwidth+4)+'px');
+                    }
+                    mwidth = 0;
+                    sep = i+1;
+                } else {
+                    mwidth = Math.max(mwidth, parseInt(c.css('width').replace('px','')));
+                }
+            }
+            if (sep < content.length) {
+                for (j=sep; j<content.length; ++j) {
+                    $(content[j]).css('width', (mwidth+4)+'px');
+                }
             }
             box.wrapInner('<div style="display:none;" />')
                 .parent()
