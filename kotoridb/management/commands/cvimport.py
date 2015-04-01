@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import transaction
 from kotoridb.models import Anime, Person, AnimeCharacter
 from .color_print import warn_print, info_print, fail_print
+from .utils import deal_str, split_str
 import re
 
 class Command(BaseCommand):
@@ -14,25 +15,6 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-l', '--cv-list', dest='cv_list', help='cv list file', metavar='CV_LIST'),
     )
-
-    def check_ascii(self, ch):
-        return ord(ch)<128
-
-    def deal_str(self, s):
-        tr = '　 '
-        s = s.strip(tr)
-        # remove ()
-        s = re.sub(r'([^()]+)\([^()]+\)', r'\1', s).strip(tr)
-        s = re.sub(r'([^（）]+)（[^（）]+）', r'\1', s).strip(tr)
-        # deal with space
-        res = ''
-        for i, c in enumerate(s):
-            if c == ' ':
-                if self.check_ascii(s[i-1]) or self.check_ascii(s[i+1]):
-                    res += c
-            else:
-                res += c
-        return res
 
     def cvimport(self, lines):
         anime = None
@@ -61,7 +43,7 @@ class Command(BaseCommand):
 
             try:
                 character, cv = re.sub(r'( ){2,}', r'|', line, 1).split('|')
-                character, cv = self.deal_str(character), self.deal_str(cv)
+                character, cv = deal_str(character), deal_str(cv)
             except ValueError:
                 warn_print('failed to unpack %s for anime %s, ignored' % (line, anime.title))
             #print(character, cv)
