@@ -37,7 +37,7 @@ def on_air(request):
     for a in animes:
         a.studio = ', '.join([str(s) for s in a.studios.all()])
         a.staff_list = [{
-            'title':s.getTitle(s.title),
+            'title':s.place,
             'staff':s.person.name
             } for s in a.staff_set.select_related('person').all()]
         a.cv_list = [{

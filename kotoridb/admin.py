@@ -28,7 +28,7 @@ class AnimeAdmin(admin.ModelAdmin):
         'display_onair',
     )
     inlines = [OnAirInline, AnimeStaffInline, AnimeCharacterInline]
-    search_fields = ['^title', '^alias']
+    search_fields = ['title', 'alias']
 
     def display_studios(self, obj):
         return ', '.join(map(lambda x:x.name, obj.studios.all()))
