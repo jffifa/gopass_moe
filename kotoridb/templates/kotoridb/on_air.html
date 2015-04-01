@@ -84,6 +84,20 @@ function getDisplayTime(t) {
     return res;
 }
 var animes = new Array();
+function parseStaff(staff_dict) {
+    for (var k in staff_dict) {
+        var v = staff_dict[k][0];
+        for (var i=1; i<staff_dict[k].length; ++i) {
+            v += ' / '+staff_dict[k][i];
+        }
+        staff_dict[k] = v;
+    }
+    var staff_list = new Array();
+    for (var k in staff_dict) {
+        staff_list.push({'title':k, 'staff':staff_dict[k]});
+    }
+    return staff_list
+}
 {% for a in animes %}
 a = {
     title:"{{ a.title }}",
@@ -99,19 +113,9 @@ a = {
     cover:{% if a.image %}"{{ a.image.url }}"{% else %}"{% static 'kotoridb/default-cover.png' %}"{% endif %},
     cv_list:[{% for c in a.cv_list %}{'character':'{{ c.character }}','cv':'{{ c.cv }}'},{% endfor %}],
 };
-a.staff_list = new Array();
 staff_dict = {{ a.staff_dict|safe }};
-for (var k in staff_dict) {
-    v = staff_dict[k][0];
-    for (i=1; i<staff_dict[k].length; ++i) {
-        v += ' / '+staff_dict[k][i];
-    }
-    staff_dict[k] = v;
-}
-for (var k in staff_dict) {
-    a.staff_list.push({'title':k, 'staff':staff_dict[k]});
-}
-animes.push(a)
+a.staff_list = parseStaff(staff_dict);
+animes.push(a);
 {% endfor %}
 $('ul#nav-day li').on('click', function(){
     function txa(text, href) {
