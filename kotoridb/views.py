@@ -37,9 +37,18 @@ def on_air(request):
     for a in animes:
         a.studio = ', '.join([str(s) for s in a.studios.all()])
         a.staff_list = [{
-            'title':s.place,
+            'place':s.place,
             'staff':s.person.name
             } for s in a.staff_set.select_related('person').all()]
+        a.staff_dict = {}
+        for s in a.staff_list:
+            if s['place'] in a.staff_dict:
+                a.staff_dict[s['place']].append(s['staff'])
+            else:
+                a.staff_dict[s['place']] = [s['staff']]
+        import json
+        a.staff_dict = json.dumps(a.staff_dict)
+
         a.cv_list = [{
             'character':c.name,
             'cv':c.cv.name
