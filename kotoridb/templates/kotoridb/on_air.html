@@ -100,7 +100,6 @@ a = {
     cv_list:[{% for c in a.cv_list %}{'character':'{{ c.character }}','cv':'{{ c.cv }}'},{% endfor %}],
 };
 a.staff_list = new Array();
-{% if a.staff_dict|length > 0 %}
 staff_dict = {{ a.staff_dict|safe }};
 for (var k in staff_dict) {
     v = staff_dict[k][0];
@@ -112,7 +111,6 @@ for (var k in staff_dict) {
 for (var k in staff_dict) {
     a.staff_list.push({'title':k, 'staff':staff_dict[k]});
 }
-{% endif %}
 animes.push(a)
 {% endfor %}
 $('ul#nav-day li').on('click', function(){
