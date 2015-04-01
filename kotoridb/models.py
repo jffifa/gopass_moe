@@ -134,6 +134,7 @@ class Staff(models.Model):
         return Staff._TITLES[self.title-1][1]+':'+self.person.name
 
     title = models.IntegerField(db_index=True, choices=_TITLES, verbose_name='职位')
+    place = models.CharField(max_length=16, db_index=True, default='', verbose_name='职位')
     person = models.ForeignKey(Person, verbose_name='人名')
     anime = models.ForeignKey(Anime, verbose_name='动画')
 
