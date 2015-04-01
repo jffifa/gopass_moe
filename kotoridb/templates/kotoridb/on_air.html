@@ -85,7 +85,7 @@ function getDisplayTime(t) {
 }
 var animes = new Array();
 {% for a in animes %}
-animes.push({
+a = {
     title:"{{ a.title }}",
     homepage:"{{ a.homepage }}",
     alias:"{{ a.alias }}",
@@ -97,9 +97,21 @@ animes.push({
     episodes:"{{ a.episodes }}",
     studio:"{{ a.studio }}",
     cover:{% if a.image %}"{{ a.image.url }}"{% else %}"{% static 'kotoridb/default-cover.png' %}"{% endif %},
-    staff_list:[{% for s in a.staff_list %}{'title':'{{ s.title }}','staff':'{{ s.staff }}'},{% endfor %}],
     cv_list:[{% for c in a.cv_list %}{'character':'{{ c.character }}','cv':'{{ c.cv }}'},{% endfor %}],
-});
+};
+staff_dict = new Array();
+{% for s in a.staff_list %}
+if (staff_dict['{{ s.title }}']) {
+    staff_dict['{{ s.title }}'] += ' / '+'{{ s.staff }}';
+} else {
+    staff_dict['{{ s.title }}'] = '{{ s.staff }}';
+}
+{% endfor %}
+a.staff_list = new Array();
+for (var k in staff_dict) {
+    a.staff_list.push({'title':k, 'staff':staff_dict[k]});
+}
+animes.push(a)
 {% endfor %}
 $('ul#nav-day li').on('click', function(){
     function txa(text, href) {
