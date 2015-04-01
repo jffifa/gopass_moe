@@ -133,7 +133,7 @@ class Staff(models.Model):
     def __str__(self):
         return '%s:%s' % (self.place, self.person.name)
 
-    place = models.CharField(max_length=16, db_index=True, default='', verbose_name='职位')
+    place = models.CharField(max_length=32, db_index=True, default='', verbose_name='职位')
     person = models.ForeignKey(Person, verbose_name='人名')
     anime = models.ForeignKey(Anime, verbose_name='动画')
 
