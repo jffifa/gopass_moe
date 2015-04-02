@@ -40,12 +40,15 @@ def on_air(request):
             'place':s.place,
             'staff':s.person.name
             } for s in a.staff_set.select_related('person').all()]
+        # ATTENTION: need to be in order
         a.staff_dict = {}
         for s in a.staff_list:
             if s['place'] in a.staff_dict:
-                a.staff_dict[s['place']].append(s['staff'])
+                a.staff_dict[s['place']][1].append(s['staff'])
             else:
-                a.staff_dict[s['place']] = [s['staff']]
+                a.staff_dict[s['place']] = (len(a.staff_dict), [s['staff']])
+        a.staff_dict = sorted(a.staff_dict.items(), key=lambda x: x[1][0])
+        a.staff_dict = [(k, v[1]) for k, v in a.staff_dict]
         import json
         a.staff_dict = json.dumps(a.staff_dict)
 

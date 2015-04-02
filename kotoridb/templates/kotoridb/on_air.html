@@ -85,16 +85,15 @@ function getDisplayTime(t) {
 }
 var animes = new Array();
 function parseStaff(staff_dict) {
-    for (var k in staff_dict) {
-        var v = staff_dict[k][0];
-        for (var i=1; i<staff_dict[k].length; ++i) {
-            v += ' / '+staff_dict[k][i];
-        }
-        staff_dict[k] = v;
-    }
     var staff_list = new Array();
-    for (var k in staff_dict) {
-        staff_list.push({'title':k, 'staff':staff_dict[k]});
+    for (var i=0; i<staff_dict.length; ++i) {
+        var k = staff_dict[i][0];
+        var v = staff_dict[i][1];
+        var v_str = '';
+        for (var j=1; j<v.length; ++j) {
+            v_str += ' / '+v[j];
+        }
+        staff_list.push({'title':k, 'staff':v_str});
     }
     return staff_list
 }
