@@ -89,7 +89,7 @@ function parseStaff(staff_dict) {
     for (var i=0; i<staff_dict.length; ++i) {
         var k = staff_dict[i][0];
         var v = staff_dict[i][1];
-        var v_str = '';
+        var v_str = v[0];
         for (var j=1; j<v.length; ++j) {
             v_str += ' / '+v[j];
         }
