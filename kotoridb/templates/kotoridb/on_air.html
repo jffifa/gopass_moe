@@ -97,6 +97,8 @@ function parseStaff(staff_dict) {
     }
     return staff_list
 }
+{% load tz %}
+{% timezone "UTC" %}
 {% for a in animes %}
 a = {
     title:"{{ a.title }}",
@@ -116,6 +118,7 @@ staff_dict = {{ a.staff_dict|safe }};
 a.staff_list = parseStaff(staff_dict);
 animes.push(a);
 {% endfor %}
+{% endtimezone %}
 $('ul#nav-day li').on('click', function(){
     function txa(text, href) {
         if (href) {

@@ -61,7 +61,7 @@ def on_air(request):
     context['animes'] = animes
     context['time_now'] = now
 
-    timezone.activate(pytz.timezone('UTC'))
+    #timezone.activate(pytz.timezone('UTC'))
     return render(request, 'kotoridb/on_air.html', context)
     #return HttpResponse(str(on_air_animes))
 
