@@ -111,6 +111,7 @@ a = {
     studio:"{{ a.studio }}",
     cover:{% if a.image %}"{{ a.image.url }}"{% else %}"{% static 'kotoridb/default-cover.png' %}"{% endif %},
     cv_list:[{% for c in a.cv_list %}{'character':'{{ c.character }}','cv':'{{ c.cv }}'},{% endfor %}],
+    extra_onair_list:[{% for oa in a.extra_on_air %}{'tv':'{{ oa.tv }}','link':'{{ oa.link }}'},{% endfor %}],
 };
 staff_dict = {{ a.staff_dict|safe }};
 a.staff_list = parseStaff(staff_dict);
@@ -119,7 +120,7 @@ animes.push(a);
 $('ul#nav-day li').on('click', function(){
     function txa(text, href) {
         if (href) {
-            return $('<a>').attr('target','_blank').attr('href',href).html(text);
+            return '<a target="_blank" href="'+href+'">'+text+'</a>';
         } else {
             return text;
         }
@@ -178,9 +179,15 @@ $('ul#nav-day li').on('click', function(){
 
             function getItemList(items, div) {
                 function getContent(x) {
-                    return $('<div class="item-list col-md-6">')
-                        .append('<span class="item-list-key">'+x.k+'</span>')
-                        .append('<span class="item-list-value">'+x.v+'</span>');
+                    if (x.w) {
+                        return $('<div class="item-list col-md-'+x.w+'">')
+                            .append('<span class="item-list-key">'+x.k+'</span>')
+                            .append('<span class="item-list-value">'+x.v+'</span>');
+                    } else {
+                        return $('<div class="item-list col-md-6">')
+                            .append('<span class="item-list-key">'+x.k+'</span>')
+                            .append('<span class="item-list-value">'+x.v+'</span>');
+                    }
                 }
                 div = div.append('<div class="row">').children('div:last-child');
                 for (i=0; i<items.length; ++i)
@@ -191,13 +198,10 @@ $('ul#nav-day li').on('click', function(){
             var dispTime = getDisplayTime(a.on_air_time);
             items.push({'k':'首播时间','v':dayDisp[dispTime.w]+' '+dispTime.time});
             items.push({'k':'首播日期','v':dispTime.date});
+            items.push({'k':'首播电视台','v':txa(a.on_air_tv, a.on_air_link)});
             items.push({'k':'话数','v':a.episodes});
             items.push({'k':'动画制作','v':a.studio});
-            if (a.homepage) {
-                items.push({'k':'官方网站','v':'<a target="_blank" href="'+a.homepage+'">'+a.homepage+'</a>'});
-            } else {
-                items.push({'k':'官方网站','v':a.homepage});
-            }
+            items.push({'k':'官方网站','v':txa(a.homepage, a.homepage)});
             getItemList(items, div);
 
             //staff
@@ -213,6 +217,26 @@ $('ul#nav-day li').on('click', function(){
             for (i=0; i<a.cv_list.length; i++) {
                 items.push({'k':a.cv_list[i].character, 'v':a.cv_list[i].cv});
             }
+            getItemList(items, div);
+            //on air
+            div.append('<h3>ONAIR</h3>');
+            items = new Array();
+            if (a.on_air_tv) {
+                items.push({'k':'首播','v':txa(a.on_air_tv,a.on_air_link)});
+            }
+            var extra_str = '';
+            if (a.dom_on_air_tv) {
+                extra_str = txa(a.dom_on_air_tv, a.dom_on_air_link);
+                for (var i=0; i<a.extra_onair_list.length; ++i) {
+                    extra_str += ' / '+txa(a.extra_onair_list[i].tv, a.extra_onair_list[i].link);
+                }
+            } else {
+                extra_str = txa(a.extra_onair_list[0].tv, a.extra_onair_list[0].link);
+                for (var i=1; i<a.extra_onair_list.length; ++i) {
+                    extra_str += ' / '+txa(a.extra_onair_list[i].tv, a.extra_onair_list[i].link);
+                }
+            }
+            items.push({'k':'国内','v':extra_str});
             getItemList(items, div);
 
             var content = div.find('span.item-list-key, h3');

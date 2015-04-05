@@ -15,3 +15,6 @@ def guess_tv_name(url):
             return name
 
     return 'link'
+
+def resize_img(f, max_width, max_height):
+    pass

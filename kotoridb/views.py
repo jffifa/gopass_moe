@@ -28,10 +28,10 @@ def on_air(request):
             a = oa.anime
             a.on_air = oa
             try:
-                oad = a.onair_set.get(type=OnAir._TYPE_DOM)
-                a.dom_on_air = oad
+                a.dom_on_air = a.onair_set.get(type=OnAir._TYPE_DOM)
             except:
                 pass
+            a.extra_on_air = a.onair_set.filter(type=OnAir._TYPE_EXTRA)
             animes.append(oa.anime)
 
     for a in animes:
