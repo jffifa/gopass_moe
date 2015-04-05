@@ -233,7 +233,7 @@ $('ul#nav-day li').on('click', function(){
                 for (var i=0; i<a.extra_onair_list.length; ++i) {
                     extra_str += ' / '+txa(a.extra_onair_list[i].tv, a.extra_onair_list[i].link);
                 }
-            } else {
+            } else if (a.extra_onair_list.length > 0) {
                 extra_str = txa(a.extra_onair_list[0].tv, a.extra_onair_list[0].link);
                 for (var i=1; i<a.extra_onair_list.length; ++i) {
                     extra_str += ' / '+txa(a.extra_onair_list[i].tv, a.extra_onair_list[i].link);
