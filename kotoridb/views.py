@@ -27,11 +27,8 @@ def on_air(request):
         if oa.time and oa.time+datetime.timedelta(weeks=oa.anime.on_air_weeks)>now:
             a = oa.anime
             a.on_air = oa
-            try:
-                a.dom_on_air = a.onair_set.get(type=OnAir._TYPE_DOM)
-            except:
-                pass
-            a.extra_on_air = a.onair_set.filter(type=OnAir._TYPE_EXTRA)
+            a.dom_on_air = a.onair_set.filter(type=OnAir._TYPE_DOM)
+            #a.extra_on_air = a.onair_set.filter(type=OnAir._TYPE_EXTRA)
             animes.append(oa.anime)
 
     for a in animes:

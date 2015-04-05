@@ -34,7 +34,7 @@ img.item-img {max-width:100%;max-height:480px}
         <th>译名</th>
         <th>首播电视台</th>
         <th>首播时间</th>
-        <th>国内首播</th>
+        <th>国内放送</th>
     </tr>
 </thead>
 <tbody class="on-air-table">
@@ -107,13 +107,15 @@ a = {
     on_air_tv:"{{ a.on_air.tv }}",
     on_air_link:"{{ a.on_air.link }}",
     on_air_time:new Date({{ a.on_air.time|date:"U" }}*1000),
-    dom_on_air_tv:"{{ a.dom_on_air.tv }}",
-    dom_on_air_link:"{{ a.dom_on_air.link }}",
+    {% with a.dom_on_air|first as doa %}
+    dom_on_air_tv:"{{ doa.tv }}",
+    dom_on_air_link:"{{ doa.link }}",
+    {% endwith %}
     episodes:"{{ a.episodes }}",
     studio:"{{ a.studio }}",
     cover:{% if a.image %}"{{ a.image.url }}"{% else %}"{% static 'kotoridb/default-cover.png' %}"{% endif %},
     cv_list:[{% for c in a.cv_list %}{'character':'{{ c.character }}','cv':'{{ c.cv }}'},{% endfor %}],
-    extra_onair_list:[{% for oa in a.extra_on_air %}{'tv':'{{ oa.tv }}','link':'{{ oa.link }}'},{% endfor %}],
+    extra_onair_list:[{% for oa in a.dom_on_air %}{'tv':'{{ oa.tv }}','link':'{{ oa.link }}'},{% endfor %}],
 };
 staff_dict = {{ a.staff_dict|safe }};
 a.staff_list = parseStaff(staff_dict);
@@ -228,12 +230,7 @@ $('ul#nav-day li').on('click', function(){
                 items.push({'k':'首播','v':txa(a.on_air_tv,a.on_air_link)});
             }
             var extra_str = '';
-            if (a.dom_on_air_tv) {
-                extra_str = txa(a.dom_on_air_tv, a.dom_on_air_link);
-                for (var i=0; i<a.extra_onair_list.length; ++i) {
-                    extra_str += ' / '+txa(a.extra_onair_list[i].tv, a.extra_onair_list[i].link);
-                }
-            } else if (a.extra_onair_list.length > 0) {
+            if (a.extra_onair_list.length > 0) {
                 extra_str = txa(a.extra_onair_list[0].tv, a.extra_onair_list[0].link);
                 for (var i=1; i<a.extra_onair_list.length; ++i) {
                     extra_str += ' / '+txa(a.extra_onair_list[i].tv, a.extra_onair_list[i].link);
