@@ -151,7 +151,7 @@ $('ul#nav-day li').on('click', function(){
             col = row.append('<td>').children(':last-child').append(txa(a.on_air_tv, a.on_air_link));
             col = row.append('<td>').children(':last-child').html(dispTime.time);
             if (a.on_air_time > now) {
-                col.html(col.html()+', '+dispTime.time);
+                col.html(col.html()+', '+dispTime.date);
                 col.addClass('info');
             }
             col = row.append('<td>').children(':last-child').append(txa(a.dom_on_air_tv, a.dom_on_air_link));
