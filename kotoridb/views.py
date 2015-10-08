@@ -1,3 +1,4 @@
+from __future__ import absolute_import, print_function, unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
 from kotoridb.models import Anime, OnAir
@@ -32,7 +33,7 @@ def on_air(request):
             animes.append(oa.anime)
 
     for a in animes:
-        a.studio = ', '.join([str(s) for s in a.studios.all()])
+        a.studio = ', '.join([unicode(s) for s in a.studios.all()])
         a.staff_list = [{
             'place':s.place,
             'staff':s.person.name

@@ -1,25 +1,27 @@
+# coding=utf-8
+
 from django.contrib import admin
 from kotoridb.models import Anime, Studio, Staff, Person, OnAir, AnimeCharacter
 import autocomplete_light
 from django.utils import timezone
 
 class AnimeStaffInline(admin.StackedInline):
-    form = autocomplete_light.modelform_factory(Staff)
+    form = autocomplete_light.modelform_factory(Staff, fields='__all__')
     model= Staff
     extra= 0
 
 class AnimeCharacterInline(admin.StackedInline):
-    form = autocomplete_light.modelform_factory(AnimeCharacter)
+    form = autocomplete_light.modelform_factory(AnimeCharacter, fields='__all__')
     model = AnimeCharacter
     extra = 0
 
 class OnAirInline(admin.StackedInline):
-    form = autocomplete_light.modelform_factory(OnAir)
+    form = autocomplete_light.modelform_factory(OnAir, fields='__all__')
     model = OnAir
     extra = 0
 
 class AnimeAdmin(admin.ModelAdmin):
-    form = autocomplete_light.modelform_factory(Anime)
+    form = autocomplete_light.modelform_factory(Anime, fields='__all__')
 
     list_display = (
         'title',
@@ -52,10 +54,10 @@ class StudioAdmin(admin.ModelAdmin):
     )
 
 class StaffAdmin(admin.ModelAdmin):
-    form = autocomplete_light.modelform_factory(Staff)
+    form = autocomplete_light.modelform_factory(Staff, fields='__all__')
 
 class PersonAdmin(admin.ModelAdmin):
-    form = autocomplete_light.modelform_factory(Person)
+    form = autocomplete_light.modelform_factory(Person, fields='__all__')
 
 # Register your models here.
 admin.site.register(Anime, AnimeAdmin)
