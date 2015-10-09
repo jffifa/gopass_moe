@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals, print_function, absolute_import
+
 from django.db import models
 from kotoridb import utils
 
@@ -9,7 +11,7 @@ class Studio(models.Model):
         verbose_name = '制作公司'
         verbose_name_plural = '制作公司'
 
-    def __str__(self):
+    def __unicode__(self):
         if self.alias:
             return '%s(%s)' % (self.name, self.alias)
         else:
@@ -23,7 +25,7 @@ class Person(models.Model):
         verbose_name = '人物'
         verbose_name_plural = '人物'
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
     name = models.CharField(max_length=128, db_index=True, verbose_name='名字')
@@ -35,7 +37,7 @@ class Anime(models.Model):
         verbose_name = '动画'
         verbose_name_plural = '动画'
 
-    def __str__(self):
+    def __unicode__(self):
         if self.alias:
             return '%s(%s)' % (self.title, self.alias)
         else:
@@ -59,7 +61,7 @@ class OnAir(models.Model):
         verbose_name = '放送信息'
         verbose_name_plural = '放送信息'
 
-    def __str__(self):
+    def __unicode__(self):
         if self.time:
             return self.tv+'/'+str(self.time)
         else:
@@ -98,7 +100,7 @@ class AnimeCharacter(Character):
         verbose_name = '动画角色'
         verbose_name_plural = '动画角色'
 
-    def __str__(self):
+    def __unicode__(self):
         if self.cv:
             return '%s-%s(%s)' % (self.name, self.cv.name, self.anime.title)
         else:
@@ -130,7 +132,7 @@ class Staff(models.Model):
         (15,'人物设定',),
     )
 
-    def __str__(self):
+    def __unicode__(self):
         return '%s:%s' % (self.place, self.person.name)
 
     place = models.CharField(max_length=32, db_index=True, default='', verbose_name='职位')

@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
+from __future__ import unicode_literals, print_function, absolute_import
 def guess_tv_name(url):
     TV_LIST = {
         'iqiyi':'爱奇艺',
