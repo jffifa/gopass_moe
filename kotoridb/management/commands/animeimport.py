@@ -36,7 +36,8 @@ class Command(BaseCommand):
                 anime[keys[k]] = value
 
     def save_anime(self, anime):
-        assert('title' in anime)
+        if 'title' not in anime:
+            raise CommandError('no anime title')
         if Anime.objects.filter(title=anime['title']).exists():
             warn_print('anime[%s] already exists' % (anime['title'],))
             return
