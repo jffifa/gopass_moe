@@ -57,7 +57,7 @@ class Command(BaseCommand):
         if not options['anime_list']:
             raise CommandError('anime list file must be specified')
         import os.path
-        if not (os.path.exists(options['anime_list']) and os.path.isfile(options['anime list'])):
+        if not (os.path.exists(options['anime_list']) and os.path.isfile(options['anime_list'])):
             raise CommandError('anime list %s is not an legal file.' % (options['anime_list'],))
 
         import codecs
