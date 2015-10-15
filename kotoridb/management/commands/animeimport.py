@@ -73,7 +73,7 @@ class Command(BaseCommand):
                     hour -= 24
                     day_delta = 1
                     anime['time'] = '%02d:%02d' % (hour, minute)
-                dt = datetime.strptime(anime['date']+' '+anime['time'], '%Y/%m/%d %H:%m')+timedelta(days=day_delta)
+                dt = datetime.strptime(anime['date']+' '+anime['time'], '%Y/%m/%d %H:%M')+timedelta(days=day_delta)
                 oa.time = timezone('Asia/Tokyo').localize(dt)
             oa.save()
 
