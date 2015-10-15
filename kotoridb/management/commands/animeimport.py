@@ -5,7 +5,10 @@ import re
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from .color_print import fail_print, warn_print, info_print
-from kotoridb.models import Anime
+from kotoridb.models import Anime, Studio, OnAir
+from django.db.models import Q
+from datetime import datetime, timedelta
+from pytz import timezone
 
 class Command(BaseCommand):
     args = ''
@@ -21,7 +24,7 @@ class Command(BaseCommand):
             '原名':'title',
             '官网':'homepage',
             '译名':'alias',
-            '公司':'studio_name',
+            '公司':'studio',
             '电视台':'tv',
             '首播日期':'date',
             '首播时间':'time',
@@ -32,12 +35,54 @@ class Command(BaseCommand):
                 value = match.group(1)
                 anime[keys[k]] = value
 
+    def save_anime(self, anime):
+        assert('title' in anime)
+        if Anime.objects.filter(title=anime['title']).exists():
+            warn_print('anime[%s] already exists' % (anime['title'],))
+            return
+
+        a = Anime()
+        a.title = anime['title']
+
+        if 'homepage' in anime:
+            a.homepage = anime['homepage']
+        if 'alias' in anime:
+            a.alias = anime['alias']
+
+        a.save()
+        info_print('anime[%s] is created' % (anime['title'],))
+
+        if 'studio' in anime:
+            try:
+                studio = Studio.objects.get(Q(name=anime['studio'])|Q(alias=anime['studio']))
+            except Studio.DoesNotExist:
+                studio = Studio.objects.create(name=anime['studio'])
+                info_print('studio[%s] is created' % (anime['studio'],))
+            a.studios.add(studio)
+
+        if 'tv' in anime:
+            oa = OnAir()
+            oa.tv = anime['tv']
+            if 'date' in anime:
+                if 'time' not in anime:
+                    anime['time'] = '00:00'
+                anime['date'] = '2015/'+anime['date']
+                hour, minute = map(int, anime['time'].split(':'))
+                day_delta = 0
+                if hour >= 24:
+                    hour -= 24
+                    day_delta = 1
+                    anime['time'] = '%02d:%02d' % (hour, minute)
+                dt = datetime.strptime(anime['date']+' '+anime['time'], '%Y/%m/%d %H:%m')+timedelta(days=day_delta)
+                oa.time = timezone('Asia/Tokyo').localize(dt)
+            oa.save()
+
     def import_one(self, offset, lines):
         anime = {}
         while offset < len(lines):
             line = lines[offset].strip()
             if not line:
-                print(unicode(anime))
+                self.save_anime(anime)
                 return offset+1
 
             self.parse_line(anime, line)
