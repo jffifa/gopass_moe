@@ -62,6 +62,7 @@ class Command(BaseCommand):
 
         if 'tv' in anime:
             oa = OnAir()
+            oa.anime = a
             oa.tv = anime['tv']
             if 'date' in anime:
                 if 'time' not in anime:
