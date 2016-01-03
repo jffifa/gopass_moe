@@ -2,3 +2,5 @@ django
 django-autocomplete-light
 pillow
 pytz
+requests
+pyquery
