@@ -39,12 +39,14 @@ class Command(BaseCommand):
         anime_list_q = ctx('ul.titlesDetail > li')
 
         anime_list = [
-            {
-                'title':'...',
-                'homepage':'...'
-                ''
-            }
         ]
 
         for anime_e in anime_list_q:
+            anime = {
+                'title':None,
+                'homepage':None,
+                'staff_list':[],
+                'cv_list':[],
+                'on_air_list':[],
+            }
             anime_q = pq(anime_e)
