@@ -3,7 +3,7 @@ from __future__ import unicode_literals, print_function, absolute_import
 
 from django.contrib import admin
 from kotoridb.models import Anime, Studio, Staff, Person, OnAir, AnimeCharacter
-import autocomplete_light
+from autocomplete_light import shortcuts as autocomplete_light
 from django.utils import timezone
 
 class AnimeStaffInline(admin.StackedInline):

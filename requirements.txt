@@ -1,6 +1,7 @@
-django
-django-autocomplete-light
-pillow
-pytz
-requests
-pyquery
+mysqlclient>=1.3.7
+django>=1.9
+django-autocomplete-light>=2.2.10
+pillow>=3.0.0
+pytz>=2015.7
+requests>=2.9.1
+pyquery>=1.2.9
