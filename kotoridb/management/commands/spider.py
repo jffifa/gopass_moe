@@ -167,7 +167,7 @@ class Command(BaseCommand):
 
     @classmethod
     def staff_import(cls, anime, staff_list):
-        staffs = anime.staffs
+        staffs = anime.staff_set.all()
         for staff in staff_list:
             try:
                 p = Person.objects.get(name=staff['staff_name'])
