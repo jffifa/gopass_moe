@@ -91,7 +91,7 @@ class Command(BaseCommand):
             try:
                 studio = Studio.objects.get(Q(name=s['studio_name'])|Q(alias=s['studio_name']))
             except Studio.DoesNotExist:
-                studio = Studio.objects.create(name=anime['studio_name'])
+                studio = Studio.objects.create(name=s['studio_name'])
                 info_print('studio[%s] is created' % (s['studio_name'],))
             anime.studios.add(studio)
 
