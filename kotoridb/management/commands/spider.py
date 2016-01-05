@@ -66,8 +66,6 @@ class Command(BaseCommand):
             if pq(staff_title).text() == 'アニメーション制作':
                 break
 
-        print(idx)
-
         if idx == -1:
             return []
 
@@ -75,10 +73,16 @@ class Command(BaseCommand):
         studio_str = pq(staff_q[idx]).text().strip()
 
         studio_names = studio_str.split('、')
-        print(studio_names)
         return [{
             'studio_name': s,
         } for s in studio_names]
+
+    @classmethod
+    def get_cv_list(cls, anime_q):
+        cast_char_q = anime_q('div.comment dl.cast > dt')
+        cast_q = anime_q('div.comment dl.cast > dd.staffkeywords')
+        for char, cast in [(pq(x), pq(y)) for (x, y) in zip(cast_char_q, cast_q)]:
+            print(char, cast)
 
     def handle(self, *args, **options):
         scrape_url = '/'.join((
