@@ -189,7 +189,7 @@ class Command(BaseCommand):
 
             try:
                 s = staffs.get(place=staff['staff_title'], person=p)
-            except Staff.ObjectDoesNotExist:
+            except Staff.DoesNotExist:
                 s = Staff(place=staff['staff_title'], anime=anime, person=p)
                 s.save()
                 info_print('create a new staff with place [%s] and name [%s] for anime [%s]' %
