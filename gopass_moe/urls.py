@@ -10,7 +10,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
-    #url(r'^proxy_auth/', include('acgproxy.urls', namespace='acgproxy', app_name='acgproxy')),
     url(r'^', include('kotoridb.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

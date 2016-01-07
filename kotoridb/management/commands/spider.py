@@ -69,20 +69,23 @@ class Command(BaseCommand):
     @classmethod
     def get_studio_list(cls, anime_q):
         staff_q = anime_q('div.comment dl.staff > dt')
+        found = False
         idx = -1
         for idx, staff_title in enumerate(staff_q):
-            if pq(staff_title).text() == 'アニメーション制作':
+            z = pq(staff_title).text().strip()
+            if z in ['アニメーション制作', '制作']:
+                found = True
                 break
 
-        if idx == -1:
+        if not found:
             return []
 
         staff_q = anime_q('div.comment dl.staff > dd.staffkeywords')
         studio_str = pq(staff_q[idx]).text().strip()
 
-        studio_names = studio_str.split('、')
+        studio_names = re.split(r'、|×', studio_str)
         return [{
-            'studio_name': s,
+            'studio_name': s.strip(),
         } for s in studio_names]
 
     @classmethod
@@ -149,7 +152,7 @@ class Command(BaseCommand):
         for staff_title, staff in [(pq(x), pq(y)) for (x, y) in zip (staff_title_q, staff_q)]:
             staff_title_name = staff_title.text().strip()
             staff_name = staff.text().strip()
-            if staff_title_name == 'アニメーション制作':
+            if staff_title_name in ['アニメーション制作', '制作']:
                 continue
 
             # split staff_title:
